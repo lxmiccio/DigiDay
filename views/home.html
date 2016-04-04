@@ -1,0 +1,32 @@
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('#calendar').fullCalendar({
+            editable: false,
+            header: {
+                center: 'title',
+                left: 'prev,next today',
+                right: 'month,agendaWeek,agendaDay'
+            }
+        });
+    });
+</script>
+<div ng-app="SessionMdl" ng-controller="SessionCtrl as sessions">
+    <div class="row">
+        <div class="col-md-5 col-xs-12">
+            <div class="jumbotron">
+                <div class="row-fluid">
+                    <button type="button" class="btn btn-block btn-primary">Crea una Sessione</button>
+                </div>
+                <br>
+                <div class="row-fluid">
+                    <button type="button" class="btn btn-block btn-success">Modifica una Sessione</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 col-xs-12">
+            <div class="well well-lg">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>

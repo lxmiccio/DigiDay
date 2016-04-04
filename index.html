@@ -1,0 +1,79 @@
+<html ng-app="RouterMdl">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="libraries/bower_components/bootstrap/dist/css/bootstrap.readable.min.css" rel="stylesheet">
+        <link href="libraries/bower_components/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+        <link href="libraries/bower_components/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
+        <link href="libraries/font/icon.css" rel="stylesheet">
+        <link href="libraries/font/jura.css" rel="stylesheet">
+        <script src="libraries/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="libraries/bower_components/momentjs/min/moment.min.js"></script>
+        <script src="libraries/bower_components/momentjs/min/moment-with-locales.min.js"></script>
+        <script src="libraries/bower_components/angular/angular.min.js"></script>
+        <script src="libraries/bower_components/angular-route/angular-route.js"></script>
+        <script src="libraries/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="libraries/bower_components/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+        <script src="libraries/bower_components/bootstrap-show-password/bootstrap-show-password.min.js"></script>
+        <script src="libraries/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+        <script src="libraries/bower_components/fullcalendar/dist/lang/it.js"></script>
+        <script src="js/controller/LoginController.js"></script>
+        <script src="js/controller/RegistrationController.js"></script>
+        <script src="js/controller/SessionController.js"></script>
+        <script src="js/router/Router.js"></script>
+        <style>
+            #calendar {
+                max-width: 585px;
+                margin: auto;
+            }
+
+            .error {
+                color: red;
+                font-family: "Jura";
+                font-size: 12px;
+            }
+
+            .fc-center > h2 {
+                font-family: "Jura";
+                font-size: 22px;
+            }
+
+            .jumbotron {
+                margin-bottom: 15px;
+            }
+
+            .navbar-brand {
+                font-family: "Jura";
+                font-size: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#/">DigiDay</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#/accedi">Accedi</a></li>
+                        <li><a href="#/registrazione">Registrati</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div ng-view>
+            </div>
+        </div>
+    </body>
+</html>
