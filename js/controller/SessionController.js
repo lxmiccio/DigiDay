@@ -1,108 +1,143 @@
 angular.module("SessionMdl", [])
-        .controller("SessionCtrl", function ($http) {
 
-            var vm = this;
+    .controller("SessionCtrl", function ($http) {
 
-            vm.allClassrooms = [];
-            $http.get("http://localhost/StartUp/php/router.php/classrooms").success(function (data) {
-                if (!data.error) {
-                    data.classrooms.forEach(function (entry) {
-                        vm.allClassrooms.push(entry);
-                    });
-                } else {
-                    console.log(data);
-                }
-            }).error(function (data) {
-                console.log(data);
-            });
+        var vm = this;
 
-            vm.classrooms = [];
-            vm.refreshClassrooms = function () {
-                vm.classrooms = [];
-                vm.allClassrooms.forEach(function (entry) {
-                    if (entry.sessions === null) {
-                        vm.classrooms.push(entry);
-                    } else {
-                        var free = true;
-                        entry.sessions.forEach(function (session) {
-                            console.log(vm.newSession.startingDate);
-                            console.log(session.startingDate);
-                            if ((vm.newSession.startingDate >= session.startingDate) && (vm.newSession.startingDate <= session.endingDate)
-                                    || (session.startingDate >= vm.newSession.startingDate) && (!session.startingDate <= vm.newSession.endingDate)
-                                    || (vm.newSession.endingDate >= session.startingDate) && (!vm.newSession.endingDate <= session.endingDate)
-                                    || (session.endingDate >= vm.newSession.startingDate) && (!session.endingDate <= vm.newSession.endingDate))
-                                free = false;
-                        });
-                        if (free) {
-                            vm.classrooms.push(entry);
+        vm.allClassrooms = [];
+
+        vm.getAllClassrooms = function () {
+            $http.get("php/router.php/classrooms")
+                .then(
+                    function (json){
+                        if (!json.error) {
+                            json.classrooms.forEach(function (entry) {
+                                vm.allClassrooms.push(entry);
+                            });
+                        } else {
+                            console.log(json);
                         }
+                    }, function (json){
+                        console.log(json);
                     }
-                });
-                console.log(vm.classrooms);
-            }
+                );
+        };
+        
+        vm.getAllClassrooms();
 
-            vm.items = [];
-            $http.get("http://localhost/StartUp/php/router.php/items").success(function (data) {
-                if (!data.error) {
-                    data.items.forEach(function (entry) {
-                        vm.items.push(entry);
-                    });
+        vm.classrooms = [];
+
+        vm.refreshClassrooms = function () {
+            vm.classrooms = [];
+            vm.allClassrooms.forEach(function (entry) {
+                if (entry.sessions === null) {
+                    vm.classrooms.push(entry);
                 } else {
-                    console.log(data);
-                }
-            }).error(function (data) {
-                console.log(data);
-            });
-
-            vm.sessions = [];
-            $http.get("http://localhost/StartUp/php/router.php/sessions").success(function (data) {
-                if (!data.error) {
-                    data.data.forEach(function (entry) {
-                        vm.sessions.push(entry);
+                    var free = true;
+                    entry.sessions.forEach(function (session) {
+                        console.log(vm.newSession.startingDate);
+                        console.log(session.startingDate);
+                        if ((vm.newSession.startingDate >= session.startingDate) && (vm.newSession.startingDate <= session.endingDate)
+                                || (session.startingDate >= vm.newSession.startingDate) && (!session.startingDate <= vm.newSession.endingDate)
+                                || (vm.newSession.endingDate >= session.startingDate) && (!vm.newSession.endingDate <= session.endingDate)
+                                || (session.endingDate >= vm.newSession.startingDate) && (!session.endingDate <= vm.newSession.endingDate)) {
+                            free = false;
+                        }
                     });
-                } else {
-                    console.log(data);
+                    if (free) {
+                        vm.classrooms.push(entry);
+                    }
                 }
-            }).error(function (error) {
-                console.log(error);
             });
+        };
 
-            vm.topics = [];
-            $http.get("http://localhost/StartUp/php/router.php/topics").success(function (data) {
-                if (!data.error) {
-                    data.topics.forEach(function (entry) {
-                        vm.topics.push(entry);
-                    });
-                } else {
-                    console.log(data);
-                }
-            }).error(function (data) {
-                console.log(data);
-            });
+        vm.items = [];
 
+        vm.getItems = function () {
+            $http.get("php/router.php/items")
+                .then(
+                    function (json) {
+                        if (!json.error) {
+                            json.items.forEach(function (entry) {
+                                vm.items.push(entry);
+                            });
+                        } else {
+                            console.log(json);
+                        }
+                    }, function (json){
+                        console.log(json);
+                    }
+                );
+        };
+        
+        vm.getItems();
 
+        vm.sessions = [];
 
-            vm.newSession = {};
+        vm.getSessions = function () {
+            $http.get("php/router.php/sessions")
+                .then(
+                    function (json) {
+                        if (!json.error) {
+                            json.sessions.forEach(function (entry) {
+                                vm.sessions.push(entry);
+                            });
+                        } else {
+                            console.log(json);
+                        }
+                    }, function (json){
+                        console.log(json);
+                    }
+                );
+        };
+        
+        vm.getSessions();
 
-            vm.newSession.maxPartecipants = 20;
-            vm.decreaseMaxPartecipants = function () {
-                if (vm.newSession.maxPartecipants > 3) {
-                    vm.newSession.maxPartecipants--;
-                }
+        vm.topics = [];
+
+        vm.getTopics = function () {
+            $http.get("php/router.php/topics")
+                .then(
+                    function (json) {
+                        if (!json.error) {
+                            json.topics.forEach(function (entry) {
+                                vm.topics.push(entry);
+                            });
+                        } else {
+                            console.log(json);
+                        }
+                    }, function (json){
+                        console.log(json);
+                    }
+                );
+        };
+        
+        vm.getTopics();
+
+        vm.newSession = {};
+        vm.newSession.maxPartecipants = 20;
+
+        vm.decreaseMaxPartecipants = function () {
+            if (vm.newSession.maxPartecipants > 3) {
+                vm.newSession.maxPartecipants--;
             }
-            vm.increaseMaxPartecipants = function () {
-                if (vm.newSession.maxPartecipants < 25) {
-                    vm.newSession.maxPartecipants++;
-                }
-            }
+        };
 
-            vm.createSession = function () {
-                $http.post('http://localhost/StartUp/php/router.php/session/create', {session: vm.session})
-                        .then(function (data) {
-                            console.log(data);
-                        }, function (data) {
-                            console.log(data);
-                        });
+        vm.increaseMaxPartecipants = function () {
+            if (vm.newSession.maxPartecipants < 25) {
+                vm.newSession.maxPartecipants++;
+            }
+        };
+
+        vm.createSession = function () {
+            $http.post("php/router.php/session/create", {session: vm.session})
+                .then(
+                    function (data) {
+                        console.log(data);
+                    }, function (data) {
+                        console.log(data);
+                    }
+                );
             };
 
         });

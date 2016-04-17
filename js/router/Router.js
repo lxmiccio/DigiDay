@@ -11,11 +11,8 @@ angular.module("RouterMdl", ["ngRoute", "LoginMdl", "RegistrationMdl", "Calendar
         $routeProvider.when("/registrati", {
             templateUrl: "views/register.html"
         });
-        $routeProvider.when("/sessione", {
-            templateUrl: "views/sessione.html"
-        });
         $routeProvider.when("/sessione/crea", {
-            templateUrl: "views/sessione.html"
+            templateUrl: "views/session.html"
         });
 
     }]);

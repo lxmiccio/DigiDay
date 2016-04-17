@@ -60,6 +60,37 @@ $router->get("StartUp/php/router.php/freshers", function() {
 });
 
 /**
+ * Logs an user
+ */
+$router->post('StartUp/php/router.php/user/login', function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+    $fresher = filter_var($json->user->fresher, FILTER_SANITIZE_STRING);
+    $password = $json->user->password;
+
+    try {
+        $error = true;
+        foreach ($mysql->query("SELECT Password AS password FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
+            if (crypt($password, $row["password"]) == $row["password"]) {
+                $error = false;
+            }
+        }
+        echo json_encode(array(
+            "error" => $error,
+            "message" => "Autenticato con successo"
+        ));
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
  * Returns all the emails
  */
 $router->get("StartUp/php/router.php/emails", function() {
@@ -84,7 +115,37 @@ $router->get("StartUp/php/router.php/emails", function() {
     }
 });
 
+/**
+ * Creates an user
+ */
+$router->post("StartUp/php/router.php/user/create", function() {
+    require_once "connection.php";
 
+    $json = json_decode(file_get_contents('php://input'));
+    $fresher = filter_var($json->user->fresher, FILTER_SANITIZE_STRING);
+    $password = crypt($json->user->password, "$2y$10$" . substr(md5(uniqid(rand(), true)), 0, 22));
+    $firstName = filter_var($json->user->firstName, FILTER_SANITIZE_STRING);
+    $lastName = filter_var($json->user->lastName, FILTER_SANITIZE_STRING);
+    $email = filter_var($json->user->email, FILTER_SANITIZE_EMAIL);
+    $birthdate = date("Y-m-d", strtotime(filter_var($json->user->birthdate, FILTER_SANITIZE_STRING)));
+    $role = filter_var($json->user->role, FILTER_SANITIZE_STRING);
+    $sex = filter_var($json->user->sex, FILTER_SANITIZE_STRING);
+
+    try {
+        $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "')");
+        echo json_encode(array(
+            "error" => false,
+            "message" => "Registrato con successo"
+        ));
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
 
 /*
  * Returns all the classrooms including the sessions from which they are required
@@ -234,66 +295,7 @@ $router->post("StartUp/php/router.php/session/create", function() {
 });
 
 
-/**
- * Creates an user
- */
-$router->post("StartUp/php/router.php/user/create", function() {
-    require_once "connection.php";
 
-    $json = json_decode(file_get_contents('php://input'));
-    $fresher = filter_var($json->user->fresher, FILTER_SANITIZE_STRING);
-    $password = crypt($json->user->password, "$2y$10$" . substr(md5(uniqid(rand(), true)), 0, 22));
-    $firstName = filter_var($json->user->firstName, FILTER_SANITIZE_STRING);
-    $lastName = filter_var($json->user->lastName, FILTER_SANITIZE_STRING);
-    $email = filter_var($json->user->email, FILTER_SANITIZE_EMAIL);
-    $birthdate = date("Y-m-d", strtotime(filter_var($json->user->birthdate, FILTER_SANITIZE_STRING)));
-    $role = filter_var($json->user->role);
-    $sex = filter_var($json->user->sex);
-
-    try {
-        $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "')");
-        echo json_encode(array(
-            "error" => false
-        ));
-    } catch (PDOException $exception) {
-        echo json_encode(array(
-            "error" => true,
-            "message" => $exception->getMessage()
-        ));
-    } finally {
-        $mysql = null;
-    }
-});
-
-/**
- * Logs an user
- */
-$router->post('StartUp/php/router.php/user/login', function() {
-    require_once "connection.php";
-
-    $json = json_decode(file_get_contents('php://input'));
-    $fresher = filter_var($json->user->fresher, FILTER_SANITIZE_STRING);
-    $password = $json->user->password;
-
-    try {
-        $error = true;
-        foreach ($mysql->query("SELECT Password AS password FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
-            if (crypt($password, $row["password"]) == $row["password"]) {
-                $error = false;
-            }
-        }
-        echo json_encode(array(
-            "error" => $error
-        ));
-    } catch (PDOException $exception) {
-        echo json_encode(array(
-            "error" => true,
-            "message" => $exception->getMessage()
-        ));
-    } finally {
-        $mysql = null;
-    }
-});
 
 /**
  * Returns all the sessions

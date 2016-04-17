@@ -7,7 +7,7 @@ angular.module("RegistrationMdl", [])
         vm.freshers = [];
 
         vm.getFreshers = function () {
-            $http.get("/StartUp/php/router.php/freshers")
+            $http.get("php/router.php/freshers")
                 .then(
                     function (json) {
                         if (!json.data.error) {
@@ -34,7 +34,7 @@ angular.module("RegistrationMdl", [])
         vm.emails = [];
 
         vm.getEmails = function () {
-            $http.get("/StartUp/php/router.php/emails")
+            $http.get("php/router.php/emails")
                 .then(
                     function (json) {
                         if (!json.data.error) {
@@ -75,7 +75,7 @@ angular.module("RegistrationMdl", [])
         vm.createUser = function () {
             if (!vm.isInvalidEmail() && !vm.isExistingFresher() && !vm.isExistingEmail()) {
                 console.log(vm.user);
-                $http.post("/StartUp/php/router.php/user/create", {user: vm.user})
+                $http.post("php/router.php/user/create", {user: vm.user})
                     .then(
                         function (json) {
                             //TO DO

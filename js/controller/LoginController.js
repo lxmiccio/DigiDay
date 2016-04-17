@@ -7,7 +7,7 @@ angular.module("LoginMdl", [])
         vm.freshers = [];
 
         vm.getFreshers = function () {
-            $http.get("/StartUp/php/router.php/freshers")
+            $http.get("php/router.php/freshers")
                 .then(
                     function (json) {
                         if (!json.data.error) {
@@ -35,7 +35,7 @@ angular.module("LoginMdl", [])
 
         vm.authenticateUser = function () {
             if (!vm.isNewFresher()) {
-                $http.post("http://localhost/StartUp/php/router.php/user/login", {user: vm.user})
+                $http.post("php/router.php/user/login", {user: vm.user})
                     .then(
                         function (json) {
                             //TO DO
