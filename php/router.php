@@ -5,6 +5,7 @@ require_once ".." . DIRECTORY_SEPARATOR . "libraries" . DIRECTORY_SEPARATOR . "v
 $router = new Phroute\Phroute\RouteCollector();
 
 
+
 /**
  * Returns all the sessions to print them into the calendar
  */
@@ -62,7 +63,7 @@ $router->get("StartUp/php/router.php/freshers", function() {
 /**
  * Logs an user
  */
-$router->post('StartUp/php/router.php/user/login', function() {
+$router->post("StartUp/php/router.php/user/login", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -205,22 +206,93 @@ $router->get("StartUp/php/router.php/classrooms", function() {
 
 /**
  * Returns all the items including the sessions from which they are required
- * TO COMPLETE
  */
 $router->get("StartUp/php/router.php/items", function() {
     require_once "connection.php";
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Nome AS name, Descrizione AS description FROM Materiale") as $row) {
-            $array[] = array(
-                "name" => $row["name"],
-                "description" => $row["description"]
-            );
+        foreach ($mysql->query("SELECT Materiale.IdMateriale AS item, Descrizione AS description, Nome AS name, DataInizio AS startingDate, DataFine AS endingDate FROM Materiale LEFT OUTER JOIN Richiede ON Materiale.IdMateriale = Richiede.IdMateriale LEFT OUTER JOIN Sessione ON Richiede.IdSessione = Sessione.IdSessione") as $row) {
+            $added = false;
+            foreach ($array as &$object) {
+                if ($object["item"] == $row["item"]) {
+                    $added = true;
+                    $object["item"][] = array(
+                        "startingDate" => $row["startingDate"],
+                        "endingDate" => $row["endingDate"]
+                    );
+                }
+            }
+            if (!$added) {
+                if (isset($row["startingDate"]) || isset($row["endingDate"])) {
+                    $array[] = array(
+                        "item" => $row["item"],
+                        "description" => $row["description"],
+                        "name" => $row["name"],
+                        "sessions" => array(
+                            array(
+                                "startingDate" => $row["startingDate"],
+                                "endingDate" => $row["endingDate"]
+                            )
+                        )
+                    );
+                } else {
+                    $array[] = array(
+                        "item" => $row["item"],
+                        "description" => $row["description"],
+                        "name" => $row["name"],
+                        "sessions" => null
+                    );
+                }
+            }
         }
         echo json_encode(array(
             "error" => false,
             "items" => $array
+        ));
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Returns all the sessions
+ */
+$router->get("StartUp/php/router.php/sessions", function() {
+    require_once "connection.php";
+
+    try {
+        $array = array();
+        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione") as $row) {
+            $array[] = array(
+                "id" => $row["sessionId"],
+                "title" => $row["title"],
+                "startingDate" => $row['startingDate'],
+                "endingDate" => $row['endingDate'],
+                "partecipants" => $row["partecipants"],
+                "details" => $row["details"],
+                "creator" => array(
+                    "id" => $row["creatorFresher"]
+                ),
+                "class" => array(
+                    "id" => $row["classId"]
+                ),
+                "topic" => array(
+                    "id" => $row["topicId"]
+                ),
+                "material" => array(
+                    "id" => $row["itemId"]
+                )
+            );
+        }
+        echo json_encode(array(
+            "error" => false,
+            "sessions" => $array
         ));
     } catch (PDOException $exception) {
         echo json_encode(array(
@@ -260,8 +332,6 @@ $router->get("StartUp/php/router.php/topics", function() {
     }
 });
 
-
-
 /**
  * Creates a session
  * TO COMPLETE
@@ -270,17 +340,21 @@ $router->post("StartUp/php/router.php/session/create", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
-    $title = filter_var($json->session->fresher, FILTER_SANITIZE_STRING);
-    $password = crypt($json->session->password, "$2y$10$" . substr(md5(uniqid(rand(), true)), 0, 22));
-    $firstName = filter_var($json->session->firstName, FILTER_SANITIZE_STRING);
-    $lastName = filter_var($json->session->lastName, FILTER_SANITIZE_STRING);
-    $email = filter_var($json->session->email, FILTER_SANITIZE_EMAIL);
-    $birthdate = date("Y-m-d", strtotime(filter_var($json->session->birthdate, FILTER_SANITIZE_STRING)));
-    $role = filter_var($json->session->role);
-    $sex = filter_var($json->session->sex);
+    var_dump($json);
+    $title = filter_var($json->session->title, FILTER_SANITIZE_STRING);
+    $startingDate = date("Y-m-d H:i:s", strtotime(filter_var($json->session->startingDate, FILTER_SANITIZE_STRING)));
+    $endingDate = date("Y-m-d H:i:s", strtotime(filter_var($json->session->endingDate, FILTER_SANITIZE_STRING)));
+    $maxPartecipants = filter_var($json->session->maxPartecipants, FILTER_SANITIZE_STRING);
+    $details = filter_var($json->session->details, FILTER_SANITIZE_STRING);
+    //TO COMPLETE
+    $creator = 1;
+    //
+    $classroom = filter_var($json->session->classroom, FILTER_SANITIZE_STRING);
+    $topic = filter_var($json->session->topic, FILTER_SANITIZE_STRING);
 
     try {
-        $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "')");
+        $mysql->query("INSERT INTO Sessione (Titolo, DataInizio, DataFine, NumeroMassimo, Dettagli, MatricolaCreatore, IdAula, IdArgomento) VALUES ('" . $title . "', '" . $startingDate . ':00' . "', '" . $endingDate . ':00' . "', '" . $maxPartecipants . "', '" . $details . "', " . $creator . ", '" . $classroom . "', (SELECT IdArgomento FROM Argomento WHERE Ambito='" . $topic . "'))");
+        //Recuperare l'id della sessione inserita e inserire l'eventuale materiale
         echo json_encode(array(
             "error" => false
         ));
@@ -294,53 +368,6 @@ $router->post("StartUp/php/router.php/session/create", function() {
     }
 });
 
-
-
-
-/**
- * Returns all the sessions
- * TO COMPLETE
- */
-$router->get('StartUp/php/router.php/sessions', function() {
-    require_once "connection.php";
-
-    try {
-        $array = array();
-        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione") as $row) {
-            $array[] = array(
-                "id" => $row["sessionId"],
-                "title" => $row["title"],
-                "startingDate" => $row['startingDate'],
-                "endingDate" => $row['endingDate'],
-                "partecipants" => $row["partecipants"],
-                "details" => $row["details"],
-                "creator" => array(
-                    "id" => $row["creatorFresher"]
-                ),
-                "class" => array(
-                    "id" => $row["classId"]
-                ),
-                "topic" => array(
-                    "id" => $row["topicId"]
-                ),
-                "material" => array(
-                    "id" => $row["itemId"]
-                )
-            );
-        }
-        echo json_encode(array(
-            "error" => false,
-            "data" => $array
-        ));
-    } catch (PDOException $exception) {
-        echo json_encode(array(
-            "error" => true,
-            "message" => $exception->getMessage()
-        ));
-    } finally {
-        $mysql = null;
-    }
-});
 
 
 $dispatcher = new Phroute\Phroute\Dispatcher($router->getData());

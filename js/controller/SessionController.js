@@ -11,7 +11,7 @@ angular.module("SessionMdl", [])
                 .then(
                     function (json){
                         if (!json.error) {
-                            json.classrooms.forEach(function (entry) {
+                            json.data.classrooms.forEach(function (entry) {
                                 vm.allClassrooms.push(entry);
                             });
                         } else {
@@ -35,12 +35,10 @@ angular.module("SessionMdl", [])
                 } else {
                     var free = true;
                     entry.sessions.forEach(function (session) {
-                        console.log(vm.newSession.startingDate);
-                        console.log(session.startingDate);
-                        if ((vm.newSession.startingDate >= session.startingDate) && (vm.newSession.startingDate <= session.endingDate)
-                                || (session.startingDate >= vm.newSession.startingDate) && (!session.startingDate <= vm.newSession.endingDate)
-                                || (vm.newSession.endingDate >= session.startingDate) && (!vm.newSession.endingDate <= session.endingDate)
-                                || (session.endingDate >= vm.newSession.startingDate) && (!session.endingDate <= vm.newSession.endingDate)) {
+                        if ((vm.session.startingDate >= session.startingDate) && (vm.session.startingDate <= session.endingDate)
+                                || (session.startingDate >= vm.session.startingDate) && (!session.startingDate <= vm.session.endingDate)
+                                || (vm.session.endingDate >= session.startingDate) && (!vm.session.endingDate <= session.endingDate)
+                                || (session.endingDate >= vm.session.startingDate) && (!session.endingDate <= vm.session.endingDate)) {
                             free = false;
                         }
                     });
@@ -51,15 +49,15 @@ angular.module("SessionMdl", [])
             });
         };
 
-        vm.items = [];
+        vm.allItems = [];
 
         vm.getItems = function () {
             $http.get("php/router.php/items")
                 .then(
                     function (json) {
                         if (!json.error) {
-                            json.items.forEach(function (entry) {
-                                vm.items.push(entry);
+                            json.data.items.forEach(function (entry) {
+                                vm.allItems.push(entry);
                             });
                         } else {
                             console.log(json);
@@ -69,8 +67,32 @@ angular.module("SessionMdl", [])
                     }
                 );
         };
-        
+
         vm.getItems();
+
+        vm.items = [];
+
+        vm.refreshItems = function () {
+            vm.items = [];
+            vm.allItems.forEach(function (entry) {
+                if (entry.sessions === null) {
+                    vm.items.push(entry);
+                } else {
+                    var free = true;
+                    entry.sessions.forEach(function (session) {
+                        if ((vm.session.startingDate >= session.startingDate) && (vm.session.startingDate <= session.endingDate)
+                                || (session.startingDate >= vm.session.startingDate) && (!session.startingDate <= vm.session.endingDate)
+                                || (vm.session.endingDate >= session.startingDate) && (!vm.session.endingDate <= session.endingDate)
+                                || (session.endingDate >= vm.session.startingDate) && (!session.endingDate <= vm.session.endingDate)) {
+                            free = false;
+                        }
+                    });
+                    if (free) {
+                        vm.items.push(entry);
+                    }
+                }
+            });
+        };
 
         vm.sessions = [];
 
@@ -79,7 +101,7 @@ angular.module("SessionMdl", [])
                 .then(
                     function (json) {
                         if (!json.error) {
-                            json.sessions.forEach(function (entry) {
+                            json.data.sessions.forEach(function (entry) {
                                 vm.sessions.push(entry);
                             });
                         } else {
@@ -90,7 +112,7 @@ angular.module("SessionMdl", [])
                     }
                 );
         };
-        
+
         vm.getSessions();
 
         vm.topics = [];
@@ -100,7 +122,7 @@ angular.module("SessionMdl", [])
                 .then(
                     function (json) {
                         if (!json.error) {
-                            json.topics.forEach(function (entry) {
+                            json.data.topics.forEach(function (entry) {
                                 vm.topics.push(entry);
                             });
                         } else {
@@ -114,18 +136,18 @@ angular.module("SessionMdl", [])
         
         vm.getTopics();
 
-        vm.newSession = {};
-        vm.newSession.maxPartecipants = 20;
+        vm.session = {};
+        vm.session.maxPartecipants = 20;
 
         vm.decreaseMaxPartecipants = function () {
-            if (vm.newSession.maxPartecipants > 3) {
-                vm.newSession.maxPartecipants--;
+            if (vm.session.maxPartecipants > 3) {
+                vm.session.maxPartecipants--;
             }
         };
 
         vm.increaseMaxPartecipants = function () {
-            if (vm.newSession.maxPartecipants < 25) {
-                vm.newSession.maxPartecipants++;
+            if (vm.session.maxPartecipants < 25) {
+                vm.session.maxPartecipants++;
             }
         };
 
