@@ -1,0 +1,31 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#calendar").fullCalendar({
+            editable: false,
+            header: {
+                center: 'title',
+                left: 'prev,next today',
+                right: 'month,agendaWeek,agendaDay'
+            }
+        });
+    });
+</script>
+<style>
+    #calendar-container {
+        margin-top: 5%;
+    }
+
+    #calendar {
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .fc-center > h2 {
+        font-size: 18px;
+    }
+</style>
+<div ng-app="SessionMdl" ng-controller="CalendarCtrl as calendar">
+    <div id="calendar-container">
+        <div id="calendar"></div>
+    </div>
+</div>

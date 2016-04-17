@@ -1,0 +1,87 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#birthdate").bootstrapMaterialDatePicker({
+            clearButton: true,
+            lang: "it",
+            maxDate: new Date(),
+            time: false
+        });
+    });
+</script>
+<div ng-app="RegistrationMdl" ng-controller="RegistrationCtrl as registration">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <form name="registrationForm" novalidate>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.fresher.$error.required || registration.checkFresher() ? 'has-error' : 'has-success'">
+                        <label for="fresher">Matricola</label>
+                        <input class="form-control" type="text" name="fresher" id="fresher" ng-model="registration.user.fresher" required/>
+                        <div class="error text-center" ng-show="registration.checkFresher()">Matricola inserita già utilizzata</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.password.$error.required ? 'has-error' : 'has-success'">
+                        <label for="password">Password</label>
+                        <input class="form-control" type="password" name="password" id="password" ng-model="registration.user.password" required/>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.firstName.$error.required ? 'has-error' : 'has-success'">
+                        <label for="firstName">Nome</label>
+                        <input class="form-control" type="text" name="firstName" id="firstName" ng-model="registration.user.firstName" required/>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.lastName.$error.required ? 'has-error' : 'has-success'">
+                        <label for="lastName">Cognome</label>
+                        <input class="form-control" type="text" name="lastName" id="lastName" ng-model="registration.user.lastName" required/>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.email.$error.required || registration.validateEmail() || registration.checkEmail() ? 'has-error' : 'has-success'">
+                        <label for="email">Email</label>
+                        <input class="form-control" type="text" name="email" id="email" ng-model="registration.user.email" required/>
+                        <div class="error text-center" ng-show="registration.validateEmail()">Indirizzo Email non valido</div>
+                        <div class="error text-center" ng-show="registration.checkEmail()">Indirizzo Email già utilizzato</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.birthdate.$error.required ? 'has-error' : 'has-success'">
+                        <label for="birthdate">Data di Nascita</label>
+                        <input class="form-control" type="text" name="birthdate" id="birthdate" ng-model="registration.user.birthdate" required/>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.role.$error.required ? 'has-error' : 'has-success'">
+                        <label>Ruolo:</label>
+                        <div class="radio">
+                            <label for="teacher"><input type="radio" name="role" id="teacher" value="Docente" ng-model="registration.user.role" required>Docente</label>
+                        </div>
+                        <div class="radio">
+                            <label for="student"><input type="radio" name="role" id="student" value="Studente" ng-model="registration.user.role" required>Studente</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group" ng-class="registrationForm.sex.$error.required ? 'has-error' : 'has-success'">
+                        <label>Sesso</label>
+                        <div class="radio">
+                            <label for="male"><input type="radio" name="sex" id="male" value="Maschio" ng-model="registration.user.sex" required>Maschio</label>
+                        </div>
+                        <div class="radio">
+                            <label for="female"><input type="radio" name="sex" id="female" value="Femmina" ng-model="registration.user.sex" required>Femmina</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <br/>
+                    <div class="form-group">
+                        <div ng-class="">
+                            <button class="btn btn-block" ng-class="registrationForm.$invalid || registration.checkFresher() || registration.validateEmail() || registration.checkEmail() ? 'btn-danger' : 'btn-success'" ng-click="registration.createUser()" ng-disabled="registrationForm.$invalid || registration.checkFresher() || registration.validateEmail() || registration.checkEmail()">Registrati</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
