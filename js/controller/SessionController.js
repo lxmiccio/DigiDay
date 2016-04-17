@@ -5,7 +5,6 @@ angular.module("SessionMdl", [])
 
             vm.allClassrooms = [];
             $http.get("http://localhost/StartUp/php/router.php/classrooms").success(function (data) {
-                console.log(data);
                 if (!data.error) {
                     data.classrooms.forEach(function (entry) {
                         vm.allClassrooms.push(entry);
@@ -105,4 +104,5 @@ angular.module("SessionMdl", [])
                             console.log(data);
                         });
             };
+
         });

@@ -13,10 +13,10 @@
         <div class="col-lg-10 col-lg-offset-1">
             <form name="registrationForm" novalidate>
                 <div class="col-sm-6 col-xs-12">
-                    <div class="form-group" ng-class="registrationForm.fresher.$error.required || registration.checkFresher() ? 'has-error' : 'has-success'">
+                    <div class="form-group" ng-class="registrationForm.fresher.$error.required || registration.isExistingFresher() ? 'has-error' : 'has-success'">
                         <label for="fresher">Matricola</label>
                         <input class="form-control" type="text" name="fresher" id="fresher" ng-model="registration.user.fresher" required/>
-                        <div class="error text-center" ng-show="registration.checkFresher()">Matricola inserita già utilizzata</div>
+                        <div class="error text-center" ng-show="registration.isExistingFresher()">Matricola inserita già utilizzata</div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xs-12">
@@ -38,11 +38,11 @@
                     </div>
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                    <div class="form-group" ng-class="registrationForm.email.$error.required || registration.validateEmail() || registration.checkEmail() ? 'has-error' : 'has-success'">
+                    <div class="form-group" ng-class="registrationForm.email.$error.required || registration.isInvalidEmail() || registration.isExistingEmail() ? 'has-error' : 'has-success'">
                         <label for="email">Email</label>
                         <input class="form-control" type="text" name="email" id="email" ng-model="registration.user.email" required/>
-                        <div class="error text-center" ng-show="registration.validateEmail()">Indirizzo Email non valido</div>
-                        <div class="error text-center" ng-show="registration.checkEmail()">Indirizzo Email già utilizzato</div>
+                        <div class="error text-center" ng-show="registration.isInvalidEmail()">Indirizzo Email non valido</div>
+                        <div class="error text-center" ng-show="registration.isExistingEmail()">Indirizzo Email già utilizzato</div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xs-12">
@@ -77,7 +77,7 @@
                     <br/>
                     <div class="form-group">
                         <div ng-class="">
-                            <button class="btn btn-block" ng-class="registrationForm.$invalid || registration.checkFresher() || registration.validateEmail() || registration.checkEmail() ? 'btn-danger' : 'btn-success'" ng-click="registration.createUser()" ng-disabled="registrationForm.$invalid || registration.checkFresher() || registration.validateEmail() || registration.checkEmail()">Registrati</button>
+                            <button class="btn btn-block" ng-class="registrationForm.$invalid || registration.validateEmail() || registration.isExistingFresher() || registration.isExistingEmail() ? 'btn-danger' : 'btn-success'" ng-click="registration.createUser()" ng-disabled="registrationForm.$invalid || registration.isInvalidEmail() || registration.isExistingFresher() || registration.isExistingEmail()">Registrati</button>
                         </div>
                     </div>
                 </div>

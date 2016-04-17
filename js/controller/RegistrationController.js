@@ -59,7 +59,7 @@ angular.module("RegistrationMdl", [])
         };
 
         vm.isInvalidEmail = function () {
-            if (vm.user.email !== null) {
+            if (vm.user.email != null) {
                 if (!vm.user.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
                     return true;
                 } else {
@@ -73,7 +73,8 @@ angular.module("RegistrationMdl", [])
         vm.user = {};
 
         vm.createUser = function () {
-            if (!vm.isInvalidEmail() && !vm.isExistingFresher() && vm.isExistingEmail()) {
+            if (!vm.isInvalidEmail() && !vm.isExistingFresher() && !vm.isExistingEmail()) {
+                console.log(vm.user);
                 $http.post("/StartUp/php/router.php/user/create", {user: vm.user})
                     .then(
                         function (json) {
