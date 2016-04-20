@@ -7,7 +7,7 @@ angular.module("SessionMdl", [])
         vm.allClassrooms = [];
 
         vm.getAllClassrooms = function () {
-            $http.get("php/router.php/classrooms")
+            $http.get("/StartUp/php/router.php/classrooms")
                 .then(
                     function (json){
                         if (!json.error) {
@@ -46,13 +46,17 @@ angular.module("SessionMdl", [])
                         vm.classrooms.push(entry);
                     }
                 }
+                /*
+                $("#InputClassroom").selectpicker("render");
+                $("#InputClassroom").selectpicker("refresh");
+                */
             });
         };
 
         vm.allItems = [];
 
         vm.getItems = function () {
-            $http.get("php/router.php/items")
+            $http.get("/StartUp/php/router.php/items")
                 .then(
                     function (json) {
                         if (!json.error) {
@@ -97,7 +101,7 @@ angular.module("SessionMdl", [])
         vm.sessions = [];
 
         vm.getSessions = function () {
-            $http.get("php/router.php/sessions")
+            $http.get("/StartUp/php/router.php/sessions")
                 .then(
                     function (json) {
                         if (!json.error) {
@@ -118,7 +122,7 @@ angular.module("SessionMdl", [])
         vm.topics = [];
 
         vm.getTopics = function () {
-            $http.get("php/router.php/topics")
+            $http.get("/StartUp/php/router.php/topics")
                 .then(
                     function (json) {
                         if (!json.error) {
@@ -152,7 +156,7 @@ angular.module("SessionMdl", [])
         };
 
         vm.createSession = function () {
-            $http.post("php/router.php/session/create", {session: vm.session})
+            $http.post("/StartUp/php/router.php/session/create", {session: vm.session})
                 .then(
                     function (data) {
                         console.log(data);

@@ -1,4 +1,4 @@
-angular.module("RouterMdl", ["ngRoute", "LoginMdl", "RegistrationMdl", "CalendarMdl", "SessionMdl", "ui.calendar"])
+angular.module("RouterMdl", ["ngRoute", "LoginMdl", "RegistrationMdl", "CalendarMdl", "SessionMdl"])
     
     .config(['$routeProvider', function ($routeProvider) {
     

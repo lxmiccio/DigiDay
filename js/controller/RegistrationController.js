@@ -7,7 +7,7 @@ angular.module("RegistrationMdl", [])
         vm.freshers = [];
 
         vm.getFreshers = function () {
-            $http.get("php/router.php/freshers")
+            $http.get("/StartUp/php/router.php/freshers")
                 .then(
                     function (json) {
                         if (!json.data.error) {
@@ -34,7 +34,7 @@ angular.module("RegistrationMdl", [])
         vm.emails = [];
 
         vm.getEmails = function () {
-            $http.get("php/router.php/emails")
+            $http.get("/StartUp/php/router.php/emails")
                 .then(
                     function (json) {
                         if (!json.data.error) {
