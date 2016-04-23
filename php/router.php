@@ -4,7 +4,7 @@ require_once ".." . DIRECTORY_SEPARATOR . "libraries" . DIRECTORY_SEPARATOR . "v
 
 $router = new Phroute\Phroute\RouteCollector();
 
-
+session_start();
 
 /**
  * Returns all the sessions to print them into the calendar
@@ -76,7 +76,7 @@ $router->post("StartUp/php/router.php/user/login", function() {
             if (crypt($password, $row["password"]) == $row["password"]) {
                 $error = false;
 
-                session_start();
+
 
                 $_SESSION["fresher"] = $row["fresher"];
                 $_SESSION["firstName"] = $row["firstName"];
