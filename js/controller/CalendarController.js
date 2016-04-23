@@ -7,7 +7,7 @@ angular.module("CalendarMdl", [])
         vm.sessions = [];
         
         vm.getSessions = function(){
-            $http.get("php/router.php/sessions/calendar")
+            $http.get("/StartUp/php/router.php/sessions/calendar")
                 .then(
                     function (json) {
                         if (!json.data.error) {

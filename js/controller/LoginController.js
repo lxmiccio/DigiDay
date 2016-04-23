@@ -35,7 +35,7 @@ angular.module("LoginMdl", [])
 
             vm.authenticateUser = function () {
                 if (!vm.isNewFresher()) {
-                    $http.post("StartUp/php/router.php/user/login", {user: vm.user})
+                    $http.post("/StartUp/php/router.php/user/login", {user: vm.user})
                             .then(
                                     function (json) {
                                         //TO DO

@@ -74,8 +74,7 @@ angular.module("RegistrationMdl", [])
 
         vm.createUser = function () {
             if (!vm.isInvalidEmail() && !vm.isExistingFresher() && !vm.isExistingEmail()) {
-                console.log(vm.user);
-                $http.post("php/router.php/user/create", {user: vm.user})
+                $http.post("/StartUp/php/router.php/user/create", {user: vm.user})
                     .then(
                         function (json) {
                             //TO DO

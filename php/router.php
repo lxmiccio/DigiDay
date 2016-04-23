@@ -77,10 +77,17 @@ $router->post("StartUp/php/router.php/user/login", function() {
                 $error = false;
             }
         }
-        echo json_encode(array(
-            "error" => $error,
-            "message" => "Autenticato con successo"
-        ));
+        if ($error) {
+            echo json_encode(array(
+                "error" => $error,
+                "message" => "Autenticazione fallita"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => $error,
+                "message" => "Autenticato con successo"
+            ));
+        }
     } catch (PDOException $exception) {
         echo json_encode(array(
             "error" => true,
@@ -133,11 +140,18 @@ $router->post("StartUp/php/router.php/user/create", function() {
     $sex = filter_var($json->user->sex, FILTER_SANITIZE_STRING);
 
     try {
-        $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "')");
-        echo json_encode(array(
-            "error" => false,
-            "message" => "Registrato con successo"
-        ));
+        $result = $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "')");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Registrato con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile registrarsi"
+            ));
+        }
     } catch (PDOException $exception) {
         echo json_encode(array(
             "error" => true,
@@ -268,7 +282,9 @@ $router->get("StartUp/php/router.php/sessions", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione") as $row) {
+        //foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione") as $row) {
+
+        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Nome AS creatorFirstName, Cognome AS creatorLastName, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola") as $row) {
             $array[] = array(
                 "id" => $row["sessionId"],
                 "title" => $row["title"],
@@ -277,7 +293,9 @@ $router->get("StartUp/php/router.php/sessions", function() {
                 "partecipants" => $row["partecipants"],
                 "details" => $row["details"],
                 "creator" => array(
-                    "id" => $row["creatorFresher"]
+                    "id" => $row["creatorFresher"],
+                    "firstName" => $row["creatorFirstName"],
+                    "lastName" => $row["creatorLastName"]
                 ),
                 "class" => array(
                     "id" => $row["classId"]
@@ -346,15 +364,20 @@ $router->post("StartUp/php/router.php/session/create", function() {
     $endingDate = date("Y-m-d H:i:s", strtotime(filter_var($json->session->endingDate, FILTER_SANITIZE_STRING)));
     $maxPartecipants = filter_var($json->session->maxPartecipants, FILTER_SANITIZE_STRING);
     $details = filter_var($json->session->details, FILTER_SANITIZE_STRING);
-    //TO COMPLETE
+    $items = $json->session->items;
     $creator = 1;
-    //
     $classroom = filter_var($json->session->classroom, FILTER_SANITIZE_STRING);
     $topic = filter_var($json->session->topic, FILTER_SANITIZE_STRING);
 
     try {
         $mysql->query("INSERT INTO Sessione (Titolo, DataInizio, DataFine, NumeroMassimo, Dettagli, MatricolaCreatore, IdAula, IdArgomento) VALUES ('" . $title . "', '" . $startingDate . ':00' . "', '" . $endingDate . ':00' . "', '" . $maxPartecipants . "', '" . $details . "', " . $creator . ", '" . $classroom . "', (SELECT IdArgomento FROM Argomento WHERE Ambito='" . $topic . "'))");
-        //Recuperare l'id della sessione inserita e inserire l'eventuale materiale
+
+        $id = $mysql->lastInsertId();
+
+        foreach ($items as $item) {
+            $mysql->query("INSERT INTO Richiede (IdSessione, IdMateriale) VALUES (" . $id . ", " . $item . ")");
+        }
+
         echo json_encode(array(
             "error" => false
         ));

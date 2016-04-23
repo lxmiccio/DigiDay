@@ -4,7 +4,7 @@ angular.module("PartecipaMdl", [])
 
         var vm = this;
 
-        var sessions = [];
+        vm.sessions = [];
 
         vm.getSessions = function () {
             $http.get("/StartUp/php/router.php/sessions")

@@ -1,18 +1,30 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#InputClassroom").selectpicker("show");
+
+        $("#InputMaxPartecipants").selectpicker("show");
+
         $("#InputTopic").selectpicker("show");
 
+        $("#InputItems").selectpicker("show");
+
         $("#InputStartingDate").bootstrapMaterialDatePicker({
+            cancelText: "Annulla",
             format: "YYYY-MM-DD HH:mm",
             lang: "it",
-            minDate: new Date()
+            minDate: new Date(),
+            okText: "Conferma"
+        }).on("change", function (e, date) {
+            $("#InputEndingDate").bootstrapMaterialDatePicker("setMinDate", date);
         });
 
         $("#InputEndingDate").bootstrapMaterialDatePicker({
+            cancelText: "Annulla",
+            date: false,
             format: "YYYY-MM-DD HH:mm",
             lang: "it",
-            minDate: new Date()
+            minDate: new Date(),
+            okText: "Conferma"
         });
     });
 </script>
@@ -38,7 +50,7 @@
                         <div class="col-md-6">
                             <label for="InputStartingDate">Data di Inizio</label>
                             <div class="input-group" ng-class="sessionForm.startingDate.$error.required ? 'has-error' : 'has-success'">
-                                <input type="text" class="form-control" name="startingDate" id="InputStartingDate" placeholder="Inserisci la Data di Inizio" required ng-change="session.refreshClassrooms(); session.refreshItems();" ng-model="session.session.startingDate">
+                                <input type="text" class="form-control" name="startingDate" id="InputStartingDate" placeholder="Inserisci la Data di Inizio" required ng-change="session.onStartingDateChange();" ng-model="session.session.startingDate">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                             </div>
                             <hr/>
@@ -48,7 +60,7 @@
                         <div class="col-md-6">
                             <label for="InputEndingDate">Data di Fine</label>
                             <div class="input-group" ng-class="sessionForm.endingDate.$error.required ? 'has-error' : 'has-success'">
-                                <input type="text" class="form-control" name="endingDate" id="InputEndingDate" placeholder="Inserisci la Data di Fine" required ng-change="session.refreshClassrooms(); session.refreshItems();" ng-model="session.session.fresher">
+                                <input type="text" class="form-control" name="endingDate" id="InputEndingDate" placeholder="Inserisci la Data di Fine" required ng-change="session.onEndingDateChange();" ng-disabled="sessionForm.startingDate.$error.required" ng-model="session.session.endingDate">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                             </div>
                             <hr/>
@@ -58,8 +70,7 @@
                         <div class="col-md-6">
                             <label for="InputClassroom">Aula</label>
                             <div class="input-group" ng-class="sessionForm.classroom.$error.required ? 'has-error' : 'has-success'">
-                                <select class="selectpicker" title="Scegli la Classe" name="classroom" id="InputClassroom" disabled required ng-disabled="sessionForm.startingDate.$error.required && sessionForm.endingDate.$error.required" ng-model="session.session.classroom">
-                                    <option value="{{classroom.classroom}}" ng-repeat="classroom in session.classrooms">{{classroom.classroom}}</option>
+                                <select class="selectpicker" title="Scegli la Classe" name="classroom" id="InputClassroom" disabled required ng-change="session.onClassroomChange()" ng-model="session.session.classroom">
                                 </select>
                             </div>
                             <hr/>
@@ -69,34 +80,46 @@
                         <div class="col-md-6">
                             <label for="InputMaxPartecipants">Numero massimo di Partecipanti</label>
                             <div class="input-group" ng-class="sessionForm.maxPartecipants.$error.required ? 'has-error' : 'has-success'">
-                                <div class="input-group number-spinner">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" data-dir="dwn" ng-click="session.decreaseMaxPartecipants()"><span class="glyphicon glyphicon-minus"></span></button>
-                                    </span>
-                                    <input type="number" class="form-control" name="maxPartecipants" id="InputMaxPartecipants" max="25" placeholder="Inserisci il numero massimo di Partecipanti" required ng-model="session.session.maxPartecipants">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" data-dir="up" ng-click="session.increaseMaxPartecipants()"><span class="glyphicon glyphicon-plus"></span></button>
-                                    </span>
-                                </div>
-                            </div>
-                            <hr/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-6">
-                            <label for="InputTopic">Argomento</label>
-                            <div class="input-group" ng-class="sessionForm.topic.$error.required ? 'has-error' : 'has-success'">
-                                <select class="selectpicker" title="Scegli l'Argomento" name="topic" id="InputTopic" disabled required ng-model="session.session.topic">
-                                    <option value="{{topic.topic}}" ng-repeat="topics in session.topics">{{topic.topic}}</option>
+                                <select class="selectpicker" title="Scegli il numero di Partecipanti" name="maxPartecipants" id="InputMaxPartecipants" disabled required ng-model="session.session.maxPartecipants">
                                 </select>
                             </div>
                             <hr/>
                         </div>
                     </div>
                     <div class="form-group">
+                        <div class="col-md-6">
+                            <label for="InputItems">Materiali</label>
+                            <div class="input-group" ng-class="sessionForm.items.$error.required ? 'has-error' : 'has-success'">
+                                <select class="selectpicker" title="Scegliere i Materiali" name="items" id="InputItems" disabled multiple required ng-model="session.session.items">
+                                </select>
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+                    <p>{{session.session.items}}</p>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label for="InputTopic">Argomento</label>
+                            <div class="input-group" ng-class="sessionForm.topic.$error.required ? 'has-error' : 'has-success'">
+                                <select class="selectpicker" title="Scegli l'Argomento" name="topic" id="InputTopic" required ng-model="session.session.topic">
+                                </select>
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="InputDetails">Dettagli</label>
+                            <div ng-class="session.session.details.length === 0 ? '' : 'has-success'">
+                                <textarea class="form-control" rows="3" name="details" id="InputDetails" ng-model="session.session.details"></textarea> 
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-md-8 col-md-offset-2">
-                                <button class="btn btn-block" ng-class="registrationForm.$invalid || registration.isInvalidEmail() || registration.isExistingFresher() || registration.isExistingEmail() ? 'btn-danger' : 'btn-success'" ng-click="registration.createUser()">Registrati</button>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <button class="btn btn-block" ng-class="sessionForm.$invalid ? 'btn-danger' : 'btn-success'" ng-click="session.createSession()" ng-disabled="sessionForm.$invalid">Crea</button>
                             </div>
                         </div>
                     </div>
