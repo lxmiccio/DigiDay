@@ -72,9 +72,20 @@ $router->post("StartUp/php/router.php/user/login", function() {
 
     try {
         $error = true;
-        foreach ($mysql->query("SELECT Password AS password FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS photo FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
             if (crypt($password, $row["password"]) == $row["password"]) {
                 $error = false;
+
+                session_start();
+
+                $_SESSION["fresher"] = $row["fresher"];
+                $_SESSION["firstName"] = $row["firstName"];
+                $_SESSION["lastName"] = $row["lastName"];
+                $_SESSION["email"] = $row["email"];
+                $_SESSION["birthdate"] = $row["birthdate"];
+                $_SESSION["role"] = $row["role"];
+                $_SESSION["sex"] = $row["sex"];
+                $_SESSION["photo"] = $row["photo"];
             }
         }
         if ($error) {
@@ -95,6 +106,44 @@ $router->post("StartUp/php/router.php/user/login", function() {
         ));
     } finally {
         $mysql = null;
+    }
+});
+
+/**
+ * Returns the logged user
+ */
+$router->get("StartUp/php/router.php/user/logout", function() {
+    session_unset();
+    session_destroy();
+    echo json_encode(array(
+        "error" => false,
+        "message" => ""
+    ));
+});
+
+/**
+ * Returns the logged user
+ */
+$router->get("StartUp/php/router.php/user/me", function() {
+    if (isset($_SESSION["fresher"])) {
+        echo json_encode(array(
+            "error" => false,
+            "user" => array(
+                "fresher" => $_SESSION["fresher"],
+                "firstName" => $_SESSION["firstName"],
+                "lastName" => $_SESSION["lastName"],
+                "email" => $_SESSION["email"],
+                "birthdate" => $_SESSION["birthdate"],
+                "role" => $_SESSION["role"],
+                "sex" => $_SESSION["sex"],
+                "photo" => $_SESSION["photo"]
+            )
+        ));
+    } else {
+        echo json_encode(array(
+            "error" => true,
+            "message" => "Utente non autenticato"
+        ));
     }
 });
 
