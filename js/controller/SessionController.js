@@ -89,6 +89,7 @@ angular.module("SessionMdl", [])
                         }
                     }
                 });
+                console.log(html);
                 $("#InputItems").html(html).removeAttr("disabled").selectpicker("refresh");
             };
 

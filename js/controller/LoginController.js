@@ -1,49 +1,37 @@
 angular.module("LoginMdl", [])
 
-        .controller("LoginCtrl", function ($http) {
+    .controller("LoginCtrl", function ($http) {
 
-            var vm = this;
+        var vm = this;
 
-            vm.freshers = [];
+        vm.freshers = [];
 
-            vm.getFreshers = function () {
-                $http.get("/StartUp/php/router.php/freshers")
-                        .then(
-                                function (json) {
-                                    if (!json.data.error) {
-                                        json.data.freshers.forEach(function (entry) {
-                                            vm.freshers.push(entry);
-                                        });
-                                    }
-                                }, function (error) {
-                            console.log(error);
-                        }
-                        );
-            };
+        vm.getFreshers = function () {
+            $http.get("/StartUp/php/router.php/freshers")
+                .success(function(data, status, headers, config) {
+                    if (Array.isArray(data.freshers)) {
+                        data.freshers.forEach(function (entry) {
+                            vm.freshers.push(entry);
+                        });
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
+        };
 
-            vm.getFreshers();
+        vm.getFreshers();
 
-            vm.isNewFresher = function () {
-                if (vm.freshers.indexOf(vm.user.fresher) === -1) {
-                    return true;
-                } else {
-                    return false;
+        vm.isNewFresher = function () {
+            var bool = true;
+            vm.freshers.forEach(function (entry) {
+                if (entry.toUpperCase() === vm.user.fresher.toUpperCase()) {
+                    bool = false;
                 }
-            };
+            });
+            return bool;
+        };
 
-            vm.user = {};
+        vm.user = {};
 
-            vm.authenticateUser = function () {
-                if (!vm.isNewFresher()) {
-                    $http.post("/StartUp/php/router.php/user/login", {user: vm.user})
-                            .then(
-                                    function (json) {
-                                            //TO DO
-                                    }, function (json) {
-                                //TO DO
-                            }
-                            );
-                }
-            };
-
-        });
+    });

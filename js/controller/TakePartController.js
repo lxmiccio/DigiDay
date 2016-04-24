@@ -1,6 +1,6 @@
-angular.module("CalendarMdl", [])
+angular.module("TakePartMdl", [])
 
-    .controller("CalendarCtrl", function ($http) {
+    .controller("TakePartCtrl", function ($http) {
 
         var vm = this;
 

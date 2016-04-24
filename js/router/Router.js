@@ -1,4 +1,4 @@
-angular.module("RouterMdl", ["ngRoute", "UserMdl", "CalendarMdl", "LoginMdl", "PartecipaMdl", "RegistrationMdl", "SessionMdl"])
+angular.module("RouterMdl", ["ngRoute", "CalendarMdl", "LoginMdl", "RegistrationMdl", "SessionMdl", "TakePartMdl", "UserMdl", "UserProfileMdl"])
 
     .config(['$routeProvider', function ($routeProvider) {
     
@@ -11,11 +11,14 @@ angular.module("RouterMdl", ["ngRoute", "UserMdl", "CalendarMdl", "LoginMdl", "P
         $routeProvider.when("/registrati", {
             templateUrl: "views/registration.html"
         });
+        $routeProvider.when("/utente", {
+            templateUrl: "views/user.html"
+        });
         $routeProvider.when("/sessione/crea", {
             templateUrl: "views/session.html"
         });
         $routeProvider.when("/sessione/iscriviti", {
-            templateUrl: "views/partecipa.html"
+            templateUrl: "views/takePart.html"
         });
 
     }]);

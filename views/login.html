@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-8 col-xs-offset-2">
-                                <button class="btn btn-block" ng-class="loginForm.$invalid || login.isNewFresher() ? 'btn-danger' : 'btn-success'" ng-click="user.login()" ng-disabled="loginForm.$invalid || login.isNewFresher()">Accedi</button>
+                                <button class="btn btn-block" ng-class="loginForm.$invalid || login.isNewFresher() ? 'btn-danger' : 'btn-success'" ng-click="user.login(login.user)" ng-disabled="loginForm.$invalid || login.isNewFresher()">Accedi</button>
                             </div>
                         </div>
                     </div>

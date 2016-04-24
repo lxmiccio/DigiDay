@@ -109,7 +109,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-8 col-xs-offset-2">
-                                <button class="btn btn-block" ng-class="registrationForm.$invalid || registration.isInvalidEmail() || registration.isExistingFresher() || registration.isExistingEmail() ? 'btn-danger' : 'btn-success'" ng-click="registration.createUser()" ng-disabled="registrationForm.$invalid || registration.isInvalidEmail() || registration.isExistingFresher() || registration.isExistingEmail()">Registrati</button>
+                                <button class="btn btn-block" ng-class="registrationForm.$invalid || registration.isInvalidEmail() || registration.isExistingFresher() || registration.isExistingEmail() ? 'btn-danger' : 'btn-success'" ng-click="user.registration(registration.user)" ng-disabled="registrationForm.$invalid || registration.isInvalidEmail() || registration.isExistingFresher() || registration.isExistingEmail()">Registrati</button>
                             </div>
                         </div>
                     </div>

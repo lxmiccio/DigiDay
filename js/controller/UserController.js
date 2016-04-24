@@ -8,19 +8,23 @@ angular.module("UserMdl", [])
 
         vm.getUser = function () {
             $http.get("/StartUp/php/router.php/user/me")
-                .then(
-                    function (json) {
-                        vm.user.fresher = json.data.user.fresher;
-                        vm.user.firstName = json.data.user.firstName;
-                        vm.user.lastName = json.data.user.lastName;
-                        vm.user.email = json.data.user.email;
-                        vm.user.birthdate = json.data.user.birthdate;
-                        vm.user.role = json.data.user.role;
-                        vm.user.sex = json.data.user.sex;
-                        vm.user.photo = json.data.user.photo;
-                    }, function (json) {
-                        //TO DO
-                    });
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.user.fresher = data.user.fresher;
+                        vm.user.firstName = data.user.firstName;
+                        vm.user.lastName = data.user.lastName;
+                        vm.user.email = data.user.email;
+                        vm.user.birthdate = data.user.birthdate;
+                        vm.user.role = data.user.role;
+                        vm.user.sex = data.user.sex;
+                        vm.user.photo = data.user.photo;
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
         };
 
         vm.getUser();
@@ -33,19 +37,46 @@ angular.module("UserMdl", [])
             }
         };
 
-        vm.login = function () {
-            $http.post("/StartUp/php/router.php/user/login", {user: vm.user})
-                            .then(
-                                    function (json) {
-                                            //TO DO
-                                    }, function (json) {
-                                //TO DO
-                            }
-                            );
+        vm.login = function (user) {
+            $http.post("/StartUp/php/router.php/user/login", {user: user})
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.getUser();
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
         };
 
         vm.logout = function () {
-            vm.user = {};
+            $http.get("/StartUp/php/router.php/user/logout")
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.user = {};
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
+        };
+
+        vm.registration = function (user) {
+            $http.post("/StartUp/php/router.php/user/create", {user: user})
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.getUser();
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
         };
 
     });
