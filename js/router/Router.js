@@ -14,6 +14,9 @@ angular.module("RouterMdl", ["ngRoute", "CalendarMdl", "LoginMdl", "Registration
         $routeProvider.when("/utente", {
             templateUrl: "views/user.html"
         });
+        $routeProvider.when("/utente/modifica", {
+            templateUrl: "views/editUser.html"
+        });
         $routeProvider.when("/sessione/crea", {
             templateUrl: "views/session.html"
         });
