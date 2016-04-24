@@ -76,7 +76,8 @@
                         <ul class="dropdown-menu dropdown-user">
                             <li><a href="#/accedi" ng-hide="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Accedi</a></li>
                             <li><a href="#/registrati" ng-hide="user.isAuthenticated()"><i class="fa fa-sign-in fa-fw"></i> Registrati</a></li>
-                            <li><a href="#/" ng-click="user.logout()" ng-show="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Esci</a></li>
+                            <li><a href="#/utente" ng-show="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Profilo</a></li>
+                            <li><a href="#" ng-click="user.logout()" ng-show="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Esci</a></li>
                         </ul>
                     </li>
                     <li><a href="#/sessione/crea"><i class="fa fa-book fa-fw"></i> Crea Sessione</a></li>

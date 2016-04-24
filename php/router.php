@@ -11,8 +11,6 @@ function logout() {
     session_destroy();
 }
 
-
-
 /**
  * Returns all the sessions to print them into the calendar
  */
@@ -30,7 +28,7 @@ $router->get("StartUp/php/router.php/sessions/calendar", function() {
         }
         echo json_encode(array(
             "error" => false,
-            "session" => $array
+            "sessions" => $array
         ));
     } catch (PDOException $exception) {
         echo json_encode(array(
@@ -149,6 +147,53 @@ $router->get("StartUp/php/router.php/user/me", function() {
             "error" => true,
             "message" => "Utente non autenticato"
         ));
+    }
+});
+
+/**
+ * Logs an user
+ */
+$router->get("StartUp/php/router.php/user/sessions", function() {
+    require_once "connection.php";
+
+    try {
+        $array = array();
+
+        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Nome AS creatorFirstName, Cognome AS creatorLastName, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola WHERE Sessione.MatricolaCreatore = '" . $_SESSION["fresher"] . "'") as $row) {
+            $array[] = array(
+                "id" => $row["sessionId"],
+                "title" => $row["title"],
+                "startingDate" => $row['startingDate'],
+                "endingDate" => $row['endingDate'],
+                "partecipants" => $row["partecipants"],
+                "details" => $row["details"],
+                "creator" => array(
+                    "id" => $row["creatorFresher"],
+                    "firstName" => $row["creatorFirstName"],
+                    "lastName" => $row["creatorLastName"]
+                ),
+                "class" => array(
+                    "id" => $row["classId"]
+                ),
+                "topic" => array(
+                    "id" => $row["topicId"]
+                ),
+                "material" => array(
+                    "id" => $row["itemId"]
+                )
+            );
+        }
+        echo json_encode(array(
+            "error" => false,
+            "sessions" => $array
+        ));
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
     }
 });
 

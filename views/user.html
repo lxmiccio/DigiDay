@@ -1,16 +1,77 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
-</html>
+<div ng-app="UserProfileMdl" ng-controller="UserProfileCtrl as userProfile">
+    <br/>
+    <div class="row">
+        <div class="col-sm-2 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <img class="center-block img-circle img-responsive" src="{{userProfile.user.photo}}">
+            <br class="visible-xs"/>
+        </div>
+        <div class="col-sm-7 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <div class="jumbotron">
+                <div class="row" style="font-size: 30px;">
+                    <div class="col-xs-10 col-xs-offset-1">
+                        <label>{{userProfile.user.firstName}} {{userProfile.user.lastName}}</label>
+                    </div>
+                </div>
+                <br/><br/>
+                <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1">
+                        Email: <label>{{userProfile.user.email}}</label>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1">
+                        Data di Nascita: <label><span ng-bind="userProfile.stringToDate(userProfile.user.birthdate) | date:'dd / MM / yyyy'"></span></label>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1">
+                        Ruolo: <label>{{userProfile.user.role}}</label>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1">
+                        Sesso: <label>{{userProfile.user.sex}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <div class="jumbotron">
+                <div class="row" style="font-size: 30px;">
+                    <div class="col-xs-12 text-center">
+                        <label>Alcune mie Sessioni</label>
+                    </div>
+                </div>
+                <br/>
+                <div class="well" ng-repeat="session in userProfile.sessions| limitTo: 5">
+                    <div class="row">
+                        <div class="col-xs-10 col-xs-offset-1">
+                            <label><a href="#/session/{{session.id}}" style="font-size: 20px">{{session.title}}</a></label>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-10 col-xs-offset-1">{{session.details| limitTo: 500}} ...</div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-10 col-xs-offset-1">
+                            <span ng-bind="userProfile.stringToDate(session.startingDate) | date:'dd / MM / yyyy HH:mm'"></span> - <span ng-bind="userProfile.stringToDate(session.endingDate) | date:'HH:mm'"></span>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <label><a href="#/utente/sessioni" style="font-size: 18px;">Visualizza tutte le mie Sessioni</a></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
