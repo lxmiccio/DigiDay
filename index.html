@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="libraries/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
         <link href="libraries/startbootstrap-sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="libraries/startbootstrap-sb-admin-2/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="libraries/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css" rel="stylesheet">
@@ -74,13 +75,32 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#/accedi" ng-hide="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Accedi</a></li>
-                            <li><a href="#/registrati" ng-hide="user.isAuthenticated()"><i class="fa fa-sign-in fa-fw"></i> Registrati</a></li>
-                            <li><a href="#/utente" ng-show="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Profilo</a></li>
-                            <li><a href="#" ng-click="user.logout()" ng-show="user.isAuthenticated()"><i class="fa fa-user fa-fw"></i> Esci</a></li>
+                            <li><a href="#/accedi" ng-hide="user.isAuthenticated()"><i class="fa fa-sign-in fa-fw"></i> Accedi</a></li>
+                            <li><a href="#/registrati" ng-hide="user.isAuthenticated()"><i class="fa fa-user-plus fa-fw"></i> Registrati</a></li>
+                            <li><a href="#/utente" ng-show="user.isAuthenticated()"><i class="fa fa-info-circle fa-fw"></i> Profilo</a></li>
+                            <li><a href="#" ng-click="user.logout()" ng-show="user.isAuthenticated()"><i class="fa fa-sign-out fa-fw"></i> Esci</a></li>
                         </ul>
                     </li>
-                    <li><a href="#/sessione/crea"><i class="fa fa-book fa-fw"></i> Crea Sessione</a></li>
+
+                    <li class="dropdown pull-right">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="">
+                            <i class="fa fa-book fa-fw"></i>
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#/sessione/crea"><i class="fa fa-book fa-fw"></i> Crea sessione</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown pull-right">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="">
+                            <i class="fa fa-calendar fa-fw"></i>
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#/sessione/crea"><i class="fa fa-calendar fa-fw"></i> Visualizza calendario</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown pull-right"></li>
                 </ul>
                 <!--
                 <div class="navbar-default sidebar" role="navigation">

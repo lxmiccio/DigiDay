@@ -1,6 +1,6 @@
 angular.module("UserMdl", [])
 
-    .controller("UserController", function ($http) {
+    .controller("UserController", function ($http, $location) {
 
         var vm = this;
 
@@ -44,6 +44,7 @@ angular.module("UserMdl", [])
                         console.log(data);
                     } else {
                         vm.getUser();
+                        $location.path("/utente");
                     }
                 })
                 .error(function(data, status, headers, config) {
@@ -58,6 +59,7 @@ angular.module("UserMdl", [])
                         console.log(data);
                     } else {
                         vm.user = {};
+                        $location.path("/");
                     }
                 })
                 .error(function(data, status, headers, config) {
@@ -68,6 +70,67 @@ angular.module("UserMdl", [])
         vm.registration = function (user) {
             $http.post("/StartUp/php/router.php/user/create", {user: user})
                 .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.getUser();
+                        $location.path("/utente");
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
+        };
+
+        vm.changeEmail = function (email) {
+            $http.post("/StartUp/php/router.php/user/email", {email: email})
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.getUser();
+                        $location.path("/utente");
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
+        };
+
+        vm.changePassword = function (user) {
+            $http.post("/StartUp/php/router.php/user/password", {user: user})
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.getUser();
+                        $location.path("/utente");
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
+        };
+
+        vm.changePhoto = function (photo) {
+            $http.post("/StartUp/php/router.php/user/photo", {photo: photo})
+                .success(function(data, status, headers, config) {
+                    if(data.error) {
+                        console.log(data);
+                    } else {
+                        vm.getUser();
+                        $location.path("/utente");
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    console.log(data);
+                });
+        };
+
+        vm.delete = function (password) {
+            $http.post("/StartUp/php/router.php/user/delete", {password: password})
+                .success(function(data, status, headers, config) {
+                        vm.getUser();
                     if(data.error) {
                         console.log(data);
                     } else {

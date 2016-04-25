@@ -113,7 +113,7 @@ $router->post("StartUp/php/router.php/user/login", function() {
 });
 
 /**
- * Returns the logged user
+ * Logs the user out
  */
 $router->get("StartUp/php/router.php/user/logout", function() {
     logout();
@@ -151,7 +151,7 @@ $router->get("StartUp/php/router.php/user/me", function() {
 });
 
 /**
- * Logs an user
+ * Returs all the user's sessions
  */
 $router->get("StartUp/php/router.php/user/sessions", function() {
     require_once "connection.php";
@@ -223,6 +223,164 @@ $router->get("StartUp/php/router.php/emails", function() {
 });
 
 /**
+ * Updates the user's email
+ */
+$router->post("StartUp/php/router.php/user/email", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+    $email = filter_var($json->email, FILTER_SANITIZE_EMAIL);
+
+    try {
+        $result = $mysql->query("UPDATE Utente SET Email = '" . $email . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
+        if ($result->rowCount() > 0) {
+            $_SESSION["email"] = $email;
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Email modificata con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile modifcare l'Email"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Updates the user's password
+ */
+$router->post("StartUp/php/router.php/user/password", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $oldPassword = $json->user->oldPassword;
+    $password = crypt($json->user->password, "$2y$10$" . substr(md5(uniqid(rand(), true)), 0, 22));
+
+    try {
+        $error = true;
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS photo FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
+            if (crypt($oldPassword, $row["password"]) == $row["password"]) {
+                $error = false;
+                $result = $mysql->query("UPDATE Utente SET Password = '" . $password . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
+                if ($result->rowCount() > 0) {
+                    echo json_encode(array(
+                        "error" => false,
+                        "message" => "Password modificata con successo"
+                    ));
+                } else {
+                    echo json_encode(array(
+                        "error" => false,
+                        "message" => "Impossibile modifcare la Password"
+                    ));
+                }
+            }
+        }
+        if ($error) {
+            echo json_encode(array(
+                "error" => $error,
+                "message" => "Password attuale errata"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Updates the user's photo
+ */
+$router->post("StartUp/php/router.php/user/photo", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $photo = $json->photo;
+
+    try {
+        $result = $mysql->query("UPDATE Utente SET Foto = '" . $photo . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
+        if ($result->rowCount() > 0) {
+            $_SESSION["photo"] = $photo;
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Immagine modificata con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile modifcare l'Immagine"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Delete the user
+ */
+$router->post("StartUp/php/router.php/user/delete", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $password = $json->password;
+
+    try {
+        $error = true;
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS photo FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
+            if (crypt($password, $row["password"]) == $row["password"]) {
+                $error = false;
+                $result = $mysql->query("DELETE FROM Utente WHERE Matricola = '" . $_SESSION["fresher"] . "'");
+                if ($result->rowCount() > 0) {
+                    echo json_encode(array(
+                        "error" => false,
+                        "message" => "Utente eliminato con successo"
+                    ));
+                } else {
+                    echo json_encode(array(
+                        "error" => false,
+                        "message" => "Impossibile eliminare l'Utente"
+                    ));
+                }
+            }
+        }
+        if ($error) {
+            echo json_encode(array(
+                "error" => $error,
+                "message" => "Password errata"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
  * Creates an user
  */
 $router->post("StartUp/php/router.php/user/create", function() {
@@ -239,8 +397,22 @@ $router->post("StartUp/php/router.php/user/create", function() {
     $sex = filter_var($json->user->sex, FILTER_SANITIZE_STRING);
 
     try {
-        $result = $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "')");
+        if (!strcmp($sex, "Donna")) {
+            $photo = "https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-128.png";
+        } else {
+            $photo = "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-128.png";
+        }
+        $result = $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso, Foto) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "', '" . $photo . "')");
         if ($result->rowCount() > 0) {
+            $_SESSION["fresher"] = $fresher;
+            $_SESSION["firstName"] = $firstName;
+            $_SESSION["lastName"] = $lastName;
+            $_SESSION["email"] = $email;
+            $_SESSION["birthdate"] = $birthdate;
+            $_SESSION["role"] = $role;
+            $_SESSION["sex"] = $sex;
+            $_SESSION["photo"] = $photo;
+
             echo json_encode(array(
                 "error" => false,
                 "message" => "Registrato con successo"

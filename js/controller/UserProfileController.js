@@ -41,8 +41,7 @@ angular.module("UserProfileMdl", [])
                             vm.sessions.push(entry);
                         });
                     }
-                    console.log(vm.sessions);
-                })
+               })
                 .error(function(data, status, headers, config) {
                     console.log(data);
                 });
