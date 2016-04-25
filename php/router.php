@@ -12,6 +12,111 @@ function logout() {
 }
 
 /**
+ * Creates a classroom
+ */
+$router->post("StartUp/php/router.php/administrator/classroom", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->classroom->id, FILTER_SANITIZE_STRING);
+    $capacity = filter_var($json->classroom->capacity, FILTER_SANITIZE_NUMBER_INT);
+    $features = filter_var($json->classroom->features, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("INSERT INTO Aula (IdAula, Capienza, Caratteristiche) VALUES ('" . $id . "', " . $capacity . ", '" . $features . "')");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Aula aggiunta con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile aggiungere l'Aula"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Creates an item
+ */
+$router->post("StartUp/php/router.php/administrator/item", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $name = filter_var($json->item->name, FILTER_SANITIZE_STRING);
+    $description = filter_var($json->item->description, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("INSERT INTO Materiale (Nome, Descrizione) VALUES ('" . $name . "', '" . $description . "')");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Materiale aggiunto con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile aggiungere il Materiale"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Creates a topic
+ */
+$router->post("StartUp/php/router.php/administrator/topic", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $scope = filter_var($json->topic->scope, FILTER_SANITIZE_STRING);
+    $description = filter_var($json->topic->description, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("INSERT INTO Argomento (Ambito, Descrizione) VALUES ('" . $scope . "', '" . $description . "')");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Materiale aggiunto con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile aggiungere il Materiale"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+
+
+/**
  * Returns all the sessions to print them into the calendar
  */
 $router->get("StartUp/php/router.php/sessions/calendar", function() {
