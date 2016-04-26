@@ -20,7 +20,16 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="Start Up">
+            <file>file:/D:/Projects/Start%20Up/StartUp/js/controller/AdministratorController.js</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/php/router.php</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/js/router/Router.js</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/views/administrator/create/classroom.html</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/views/user/sessioni.html</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/views/calendar.html</file>
             <file>file:/D:/Projects/Start%20Up/StartUp/js/controller/CalendarController.js</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/js/controller/UserController.js</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/views/user/user.html</file>
+            <file>file:/D:/Projects/Start%20Up/StartUp/js/controller/UserProfileController.js</file>
         </group>
     </open-files>
 </project-private>

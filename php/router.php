@@ -14,17 +14,17 @@ function logout() {
 /**
  * Creates a classroom
  */
-$router->post("StartUp/php/router.php/administrator/classroom", function() {
+$router->post("StartUp/php/router.php/administrator/create/classroom", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
 
-    $id = filter_var($json->classroom->id, FILTER_SANITIZE_STRING);
+    $name = filter_var($json->classroom->name, FILTER_SANITIZE_STRING);
     $capacity = filter_var($json->classroom->capacity, FILTER_SANITIZE_NUMBER_INT);
     $features = filter_var($json->classroom->features, FILTER_SANITIZE_STRING);
 
     try {
-        $result = $mysql->query("INSERT INTO Aula (IdAula, Capienza, Caratteristiche) VALUES ('" . $id . "', " . $capacity . ", '" . $features . "')");
+        $result = $mysql->query("INSERT INTO Aula (Nome, Capienza, Caratteristiche) VALUES ('" . $name . "', " . $capacity . ", '" . $features . "')");
         if ($result->rowCount() > 0) {
             echo json_encode(array(
                 "error" => false,
@@ -49,7 +49,7 @@ $router->post("StartUp/php/router.php/administrator/classroom", function() {
 /**
  * Creates an item
  */
-$router->post("StartUp/php/router.php/administrator/item", function() {
+$router->post("StartUp/php/router.php/administrator/create/item", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -83,7 +83,7 @@ $router->post("StartUp/php/router.php/administrator/item", function() {
 /**
  * Creates a topic
  */
-$router->post("StartUp/php/router.php/administrator/topic", function() {
+$router->post("StartUp/php/router.php/administrator/create/topic", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -114,7 +114,244 @@ $router->post("StartUp/php/router.php/administrator/topic", function() {
     }
 });
 
+/**
+ * Updates a classroom
+ */
+$router->post("StartUp/php/router.php/administrator/update/classroom", function() {
+    require_once "connection.php";
 
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->classroom->id, FILTER_SANITIZE_NUMBER_INT);
+    $name = filter_var($json->classroom->name, FILTER_SANITIZE_STRING);
+    $capacity = filter_var($json->classroom->capacity, FILTER_SANITIZE_NUMBER_INT);
+    $features = filter_var($json->classroom->features, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("UPDATE Aula SET Nome = '" . $name . "', Capienza = '" . $capacity . "', Caratteristiche = '" . $features . "' WHERE IdAula = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Aula modificata con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile modificare l'Aula"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Updates an item
+ */
+$router->post("StartUp/php/router.php/administrator/update/item", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->item->id, FILTER_SANITIZE_NUMBER_INT);
+    $name = filter_var($json->item->name, FILTER_SANITIZE_STRING);
+    $description = filter_var($json->item->description, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("UPDATE Materiale SET Nome = '" . $name . "', Descrizione = '" . $description . "' WHERE IdMateriale = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Materiale modificato con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile modificato il Materiale"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Updates a topic
+ */
+$router->post("StartUp/php/router.php/administrator/update/topic", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->topic->id, FILTER_SANITIZE_NUMBER_INT);
+    $scope = filter_var($json->topic->scope, FILTER_SANITIZE_STRING);
+    $description = filter_var($json->topic->description, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("UPDATE Argomento SET Ambito = '" . $scope . "', Descrizione = '" . $description . "' WHERE IdArgomento = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Argomento modificato con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile modificare l'Argomento"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Deletes a classroom
+ */
+$router->post("StartUp/php/router.php/administrator/delete/classroom", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->id, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("DELETE FROM Aula WHERE IdAula = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Aula eliminata con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile eliminare l'Aula"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Deletes an item
+ */
+$router->post("StartUp/php/router.php/administrator/delete/item", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->id, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("DELETE FROM Materiale WHERE IdMateriale = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Materiale eliminato con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile eliminare il Materiale"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Deletes a topic
+ */
+$router->post("StartUp/php/router.php/administrator/delete/topic", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->id, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("DELETE FROM Argomento WHERE IdArgomento = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Argomento eliminato con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile eliminare l'Argomento"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+
+
+
+
+
+/**
+ * Returns all the sessions to print them into the calendar
+ */
+$router->get("StartUp/php/router.php/user/sessions/calendar", function() {
+    require_once "connection.php";
+
+    try {
+        $array = array();
+        foreach ($mysql->query("SELECT Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxNumber, Dettagli AS details FROM Sessione WHERE MatricolaCreatore = '" . $_SESSION["fresher"] . "'") as $row) {
+            $array[] = array(
+                "title" => $row["title"],
+                "start" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                "end" => str_replace(" ", "T", $row["endingDate"]) . "Z"
+            );
+        }
+        echo json_encode(array(
+            "error" => false,
+            "sessions" => $array
+        ));
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
 
 /**
  * Returns all the sessions to print them into the calendar
@@ -546,10 +783,10 @@ $router->get("StartUp/php/router.php/classrooms", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Aula.IdAula AS classroom, Capienza AS capacity, Caratteristiche AS features, DataInizio AS startingDate, DataFine AS endingDate FROM Aula LEFT OUTER JOIN Sessione ON Aula.IdAula = Sessione.IdAula") as $row) {
+        foreach ($mysql->query("SELECT Aula.IdAula AS id, Nome AS name, Capienza AS capacity, Caratteristiche AS features, DataInizio AS startingDate, DataFine AS endingDate FROM Aula LEFT OUTER JOIN Sessione ON Aula.IdAula = Sessione.IdAula") as $row) {
             $added = false;
             foreach ($array as &$object) {
-                if ($object["classroom"] == $row["classroom"]) {
+                if ($object["id"] == $row["id"]) {
                     $added = true;
                     $object["sessions"][] = array(
                         "startingDate" => $row["startingDate"],
@@ -560,7 +797,8 @@ $router->get("StartUp/php/router.php/classrooms", function() {
             if (!$added) {
                 if (isset($row["startingDate"]) || isset($row["endingDate"])) {
                     $array[] = array(
-                        "classroom" => $row["classroom"],
+                        "id" => $row["id"],
+                        "name" => $row["name"],
                         "capacity" => $row["capacity"],
                         "features" => $row["features"],
                         "sessions" => array(
@@ -572,7 +810,8 @@ $router->get("StartUp/php/router.php/classrooms", function() {
                     );
                 } else {
                     $array[] = array(
-                        "classroom" => $row["classroom"],
+                        "id" => $row["id"],
+                        "name" => $row["name"],
                         "capacity" => $row["capacity"],
                         "features" => $row["features"],
                         "sessions" => null
@@ -602,19 +841,19 @@ $router->get("StartUp/php/router.php/items", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Materiale.IdMateriale AS item, Descrizione AS description, Nome AS name, DataInizio AS startingDate, DataFine AS endingDate FROM Materiale LEFT OUTER JOIN Richiede ON Materiale.IdMateriale = Richiede.IdMateriale LEFT OUTER JOIN Sessione ON Richiede.IdSessione = Sessione.IdSessione") as $row) {
+        foreach ($mysql->query("SELECT Materiale.IdMateriale AS id, Descrizione AS description, Nome AS name, DataInizio AS startingDate, DataFine AS endingDate FROM Materiale LEFT OUTER JOIN Richiede ON Materiale.IdMateriale = Richiede.IdMateriale LEFT OUTER JOIN Sessione ON Richiede.IdSessione = Sessione.IdSessione") as $row) {
             $added = false;
             foreach ($array as &$object) {
-                if ($object["item"] == $row["item"]) {
+                if ($object["id"] == $row["id"]) {
                     $added = true;
-                    if (is_array($object["item"])) {
+                    if (is_array($object["id"])) {
                         $object["item"][] = array(
                             "startingDate" => $row["startingDate"],
                             "endingDate" => $row["endingDate"]
                         );
                     } else {
-                        $object["item"] = array();
-                        $object["item"][] = array(
+                        $object["id"] = array();
+                        $object["id"][] = array(
                             "startingDate" => $row["startingDate"],
                             "endingDate" => $row["endingDate"]
                         );
@@ -624,7 +863,7 @@ $router->get("StartUp/php/router.php/items", function() {
             if (!$added) {
                 if (isset($row["startingDate"]) || isset($row["endingDate"])) {
                     $array[] = array(
-                        "item" => $row["item"],
+                        "id" => $row["id"],
                         "description" => $row["description"],
                         "name" => $row["name"],
                         "sessions" => array(
@@ -636,7 +875,7 @@ $router->get("StartUp/php/router.php/items", function() {
                     );
                 } else {
                     $array[] = array(
-                        "item" => $row["item"],
+                        "id" => $row["id"],
                         "description" => $row["description"],
                         "name" => $row["name"],
                         "sessions" => null
@@ -714,10 +953,11 @@ $router->get("StartUp/php/router.php/topics", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Ambito AS topic, Descrizione AS description FROM Argomento") as $row) {
+        foreach ($mysql->query("SELECT IdArgomento AS id, Ambito AS scope, Descrizione AS description FROM Argomento") as $row) {
             $array[] = array(
-                "topic" => $row["topic"],
-                "details" => $row["description"]
+                "id" => $row["id"],
+                "scope" => $row["scope"],
+                "description" => $row["description"]
             );
         }
         echo json_encode(array(
