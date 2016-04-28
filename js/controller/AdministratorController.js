@@ -7,7 +7,7 @@ angular.module("AdministratorMdl", [])
         vm.classrooms = [];
 
         vm.getClassrooms = function () {
-            $http.get("/StartUp/php/router.php/classrooms")
+            $http.get("/DigiDay/php/router.php/classrooms")
                 .success(function(data, status, headers, config) {
                     if (Array.isArray(data.classrooms)) {
                         data.classrooms.forEach(function (entry) {
@@ -80,7 +80,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.updateClassroom = function () {
-            $http.post("/StartUp/php/router.php/administrator/update/classroom", {classroom: vm.classroom})
+            $http.post("/DigiDay/php/router.php/administrator/update/classroom", {classroom: vm.classroom})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -104,7 +104,7 @@ angular.module("AdministratorMdl", [])
         vm.items = [];
 
         vm.getItems = function () {
-            $http.get("/StartUp/php/router.php/items")
+            $http.get("/DigiDay/php/router.php/items")
                 .success(function(data, status, headers, config) {
                     if (Array.isArray(data.items)) {
                         data.items.forEach(function (entry) {
@@ -121,7 +121,7 @@ angular.module("AdministratorMdl", [])
         vm.item = {};
 
         vm.createItem = function () {
-            $http.post("/StartUp/php/router.php/administrator/create/item", {item: vm.item})
+            $http.post("/DigiDay/php/router.php/administrator/create/item", {item: vm.item})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -135,7 +135,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.deleteItem = function (id) {
-            $http.post("/StartUp/php/router.php/administrator/delete/item", {id: id})
+            $http.post("/DigiDay/php/router.php/administrator/delete/item", {id: id})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -157,7 +157,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.updateItem = function () {
-            $http.post("/StartUp/php/router.php/administrator/update/item", {item: vm.item})
+            $http.post("/DigiDay/php/router.php/administrator/update/item", {item: vm.item})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -180,7 +180,7 @@ angular.module("AdministratorMdl", [])
         vm.topics = [];
 
         vm.getTopics = function () {
-            $http.get("/StartUp/php/router.php/topics")
+            $http.get("/DigiDay/php/router.php/topics")
                 .success(function(data, status, headers, config) {
                     if (Array.isArray(data.topics)) {
                         data.topics.forEach(function (entry) {
@@ -197,7 +197,7 @@ angular.module("AdministratorMdl", [])
         vm.topic = {};
 
         vm.createTopic = function () {
-            $http.post("/StartUp/php/router.php/administrator/create/topic", {topic: vm.topic})
+            $http.post("/DigiDay/php/router.php/administrator/create/topic", {topic: vm.topic})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -211,7 +211,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.deleteTopic = function (id) {
-            $http.post("/StartUp/php/router.php/administrator/delete/topic", {id: id})
+            $http.post("/DigiDay/php/router.php/administrator/delete/topic", {id: id})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -233,7 +233,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.updateTopic = function () {
-            $http.post("/StartUp/php/router.php/administrator/update/topic", {topic: vm.topic})
+            $http.post("/DigiDay/php/router.php/administrator/update/topic", {topic: vm.topic})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);

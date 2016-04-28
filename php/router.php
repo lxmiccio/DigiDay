@@ -14,7 +14,7 @@ function logout() {
 /**
  * Creates a classroom
  */
-$router->post("StartUp/php/router.php/administrator/create/classroom", function() {
+$router->post("DigiDay/php/router.php/administrator/create/classroom", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -49,7 +49,7 @@ $router->post("StartUp/php/router.php/administrator/create/classroom", function(
 /**
  * Creates an item
  */
-$router->post("StartUp/php/router.php/administrator/create/item", function() {
+$router->post("DigiDay/php/router.php/administrator/create/item", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -83,7 +83,7 @@ $router->post("StartUp/php/router.php/administrator/create/item", function() {
 /**
  * Creates a topic
  */
-$router->post("StartUp/php/router.php/administrator/create/topic", function() {
+$router->post("DigiDay/php/router.php/administrator/create/topic", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -117,7 +117,7 @@ $router->post("StartUp/php/router.php/administrator/create/topic", function() {
 /**
  * Updates a classroom
  */
-$router->post("StartUp/php/router.php/administrator/update/classroom", function() {
+$router->post("DigiDay/php/router.php/administrator/update/classroom", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -153,7 +153,7 @@ $router->post("StartUp/php/router.php/administrator/update/classroom", function(
 /**
  * Updates an item
  */
-$router->post("StartUp/php/router.php/administrator/update/item", function() {
+$router->post("DigiDay/php/router.php/administrator/update/item", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -188,7 +188,7 @@ $router->post("StartUp/php/router.php/administrator/update/item", function() {
 /**
  * Updates a topic
  */
-$router->post("StartUp/php/router.php/administrator/update/topic", function() {
+$router->post("DigiDay/php/router.php/administrator/update/topic", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -223,7 +223,7 @@ $router->post("StartUp/php/router.php/administrator/update/topic", function() {
 /**
  * Deletes a classroom
  */
-$router->post("StartUp/php/router.php/administrator/delete/classroom", function() {
+$router->post("DigiDay/php/router.php/administrator/delete/classroom", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -256,7 +256,7 @@ $router->post("StartUp/php/router.php/administrator/delete/classroom", function(
 /**
  * Deletes an item
  */
-$router->post("StartUp/php/router.php/administrator/delete/item", function() {
+$router->post("DigiDay/php/router.php/administrator/delete/item", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -289,7 +289,7 @@ $router->post("StartUp/php/router.php/administrator/delete/item", function() {
 /**
  * Deletes a topic
  */
-$router->post("StartUp/php/router.php/administrator/delete/topic", function() {
+$router->post("DigiDay/php/router.php/administrator/delete/topic", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -327,7 +327,7 @@ $router->post("StartUp/php/router.php/administrator/delete/topic", function() {
 /**
  * Returns all the sessions to print them into the calendar
  */
-$router->get("StartUp/php/router.php/user/sessions/calendar", function() {
+$router->get("DigiDay/php/router.php/user/sessions/calendar", function() {
     require_once "connection.php";
 
     try {
@@ -356,7 +356,7 @@ $router->get("StartUp/php/router.php/user/sessions/calendar", function() {
 /**
  * Returns all the sessions to print them into the calendar
  */
-$router->get("StartUp/php/router.php/sessions/calendar", function() {
+$router->get("DigiDay/php/router.php/sessions/calendar", function() {
     require_once "connection.php";
 
     try {
@@ -385,7 +385,7 @@ $router->get("StartUp/php/router.php/sessions/calendar", function() {
 /**
  * Returns all the freshers
  */
-$router->get("StartUp/php/router.php/freshers", function() {
+$router->get("DigiDay/php/router.php/freshers", function() {
     require_once "connection.php";
 
     try {
@@ -410,7 +410,7 @@ $router->get("StartUp/php/router.php/freshers", function() {
 /**
  * Logs an user
  */
-$router->post("StartUp/php/router.php/user/login", function() {
+$router->post("DigiDay/php/router.php/user/login", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -457,7 +457,7 @@ $router->post("StartUp/php/router.php/user/login", function() {
 /**
  * Logs the user out
  */
-$router->get("StartUp/php/router.php/user/logout", function() {
+$router->get("DigiDay/php/router.php/user/logout", function() {
     logout();
 
     echo json_encode(array(
@@ -469,7 +469,7 @@ $router->get("StartUp/php/router.php/user/logout", function() {
 /**
  * Returns the logged user
  */
-$router->get("StartUp/php/router.php/user/me", function() {
+$router->get("DigiDay/php/router.php/user/me", function() {
     if (isset($_SESSION["fresher"])) {
         echo json_encode(array(
             "error" => false,
@@ -495,7 +495,7 @@ $router->get("StartUp/php/router.php/user/me", function() {
 /**
  * Returs all the user's sessions
  */
-$router->get("StartUp/php/router.php/user/sessions", function() {
+$router->get("DigiDay/php/router.php/user/sessions", function() {
     require_once "connection.php";
 
     try {
@@ -542,7 +542,7 @@ $router->get("StartUp/php/router.php/user/sessions", function() {
 /**
  * Returns all the emails
  */
-$router->get("StartUp/php/router.php/emails", function() {
+$router->get("DigiDay/php/router.php/emails", function() {
     require_once "connection.php";
 
     try {
@@ -567,7 +567,7 @@ $router->get("StartUp/php/router.php/emails", function() {
 /**
  * Updates the user's email
  */
-$router->post("StartUp/php/router.php/user/email", function() {
+$router->post("DigiDay/php/router.php/user/email", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -600,7 +600,7 @@ $router->post("StartUp/php/router.php/user/email", function() {
 /**
  * Updates the user's password
  */
-$router->post("StartUp/php/router.php/user/password", function() {
+$router->post("DigiDay/php/router.php/user/password", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -646,7 +646,7 @@ $router->post("StartUp/php/router.php/user/password", function() {
 /**
  * Updates the user's photo
  */
-$router->post("StartUp/php/router.php/user/photo", function() {
+$router->post("DigiDay/php/router.php/user/photo", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -680,7 +680,7 @@ $router->post("StartUp/php/router.php/user/photo", function() {
 /**
  * Delete the user
  */
-$router->post("StartUp/php/router.php/user/delete", function() {
+$router->post("DigiDay/php/router.php/user/delete", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -725,7 +725,7 @@ $router->post("StartUp/php/router.php/user/delete", function() {
 /**
  * Creates an user
  */
-$router->post("StartUp/php/router.php/user/create", function() {
+$router->post("DigiDay/php/router.php/user/create", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
@@ -778,7 +778,7 @@ $router->post("StartUp/php/router.php/user/create", function() {
 /*
  * Returns all the classrooms including the sessions from which they are required
  */
-$router->get("StartUp/php/router.php/classrooms", function() {
+$router->get("DigiDay/php/router.php/classrooms", function() {
     require_once "connection.php";
 
     try {
@@ -836,7 +836,7 @@ $router->get("StartUp/php/router.php/classrooms", function() {
 /**
  * Returns all the items including the sessions from which they are required
  */
-$router->get("StartUp/php/router.php/items", function() {
+$router->get("DigiDay/php/router.php/items", function() {
     require_once "connection.php";
 
     try {
@@ -900,7 +900,7 @@ $router->get("StartUp/php/router.php/items", function() {
 /**
  * Returns all the sessions
  */
-$router->get("StartUp/php/router.php/sessions", function() {
+$router->get("DigiDay/php/router.php/sessions", function() {
     require_once "connection.php";
 
     try {
@@ -948,7 +948,7 @@ $router->get("StartUp/php/router.php/sessions", function() {
 /**
  * Returns all the topics
  */
-$router->get("StartUp/php/router.php/topics", function() {
+$router->get("DigiDay/php/router.php/topics", function() {
     require_once "connection.php";
 
     try {
@@ -977,7 +977,7 @@ $router->get("StartUp/php/router.php/topics", function() {
 /**
  * Creates a session
  */
-$router->post("StartUp/php/router.php/session/create", function() {
+$router->post("DigiDay/php/router.php/session/create", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));

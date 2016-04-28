@@ -7,7 +7,7 @@ angular.module("LoginMdl", [])
         vm.freshers = [];
 
         vm.getFreshers = function () {
-            $http.get("/StartUp/php/router.php/freshers")
+            $http.get("/DigiDay/php/router.php/freshers")
                 .success(function(data, status, headers, config) {
                     if (Array.isArray(data.freshers)) {
                         data.freshers.forEach(function (entry) {

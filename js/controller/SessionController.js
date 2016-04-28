@@ -7,7 +7,7 @@ angular.module("SessionMdl", [])
             vm.classrooms = [];
 
             vm.getClassrooms = function () {
-                $http.get("/StartUp/php/router.php/classrooms")
+                $http.get("/DigiDay/php/router.php/classrooms")
                         .then(
                                 function (json) {
                                     if (!json.error) {
@@ -51,7 +51,7 @@ angular.module("SessionMdl", [])
             vm.items = [];
 
             vm.getItems = function () {
-                $http.get("/StartUp/php/router.php/items")
+                $http.get("/DigiDay/php/router.php/items")
                         .then(
                                 function (json) {
                                     if (!json.error) {
@@ -96,7 +96,7 @@ angular.module("SessionMdl", [])
             vm.sessions = [];
 
             vm.getSessions = function () {
-                $http.get("/StartUp/php/router.php/sessions")
+                $http.get("/DigiDay/php/router.php/sessions")
                         .then(
                                 function (json) {
                                     if (!json.error) {
@@ -117,7 +117,7 @@ angular.module("SessionMdl", [])
             vm.topics = [];
 
             vm.getTopics = function () {
-                $http.get("/StartUp/php/router.php/topics")
+                $http.get("/DigiDay/php/router.php/topics")
                         .then(
                                 function (json) {
                                     if (!json.error) {
@@ -198,7 +198,7 @@ angular.module("SessionMdl", [])
             };
 
             vm.createSession = function () {
-                $http.post("/StartUp/php/router.php/session/create", {session: vm.session})
+                $http.post("/DigiDay/php/router.php/session/create", {session: vm.session})
                         .then(
                                 function (data) {
                                     console.log(data);

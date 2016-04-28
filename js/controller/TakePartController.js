@@ -7,7 +7,7 @@ angular.module("TakePartMdl", [])
         vm.sessions = [];
         
         vm.getSessions = function(){
-            $http.get("/StartUp/php/router.php/sessions")
+            $http.get("/DigiDay/php/router.php/sessions")
                 .success(function(data, status, headers, config) {
                     if (Array.isArray(data.sessions)) {
                         data.sessions.forEach(function (entry) {

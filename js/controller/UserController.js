@@ -7,7 +7,7 @@ angular.module("UserMdl", [])
         vm.user = {};
 
         vm.getUser = function () {
-            $http.get("/StartUp/php/router.php/user/me")
+            $http.get("/DigiDay/php/router.php/user/me")
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -38,7 +38,7 @@ angular.module("UserMdl", [])
         };
 
         vm.login = function (user) {
-            $http.post("/StartUp/php/router.php/user/login", {user: user})
+            $http.post("/DigiDay/php/router.php/user/login", {user: user})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -53,7 +53,7 @@ angular.module("UserMdl", [])
         };
 
         vm.logout = function () {
-            $http.get("/StartUp/php/router.php/user/logout")
+            $http.get("/DigiDay/php/router.php/user/logout")
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -68,7 +68,7 @@ angular.module("UserMdl", [])
         };
 
         vm.registration = function (user) {
-            $http.post("/StartUp/php/router.php/user/create", {user: user})
+            $http.post("/DigiDay/php/router.php/user/create", {user: user})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -83,7 +83,7 @@ angular.module("UserMdl", [])
         };
 
         vm.changeEmail = function (email) {
-            $http.post("/StartUp/php/router.php/user/email", {email: email})
+            $http.post("/DigiDay/php/router.php/user/email", {email: email})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -98,7 +98,7 @@ angular.module("UserMdl", [])
         };
 
         vm.changePassword = function (user) {
-            $http.post("/StartUp/php/router.php/user/password", {user: user})
+            $http.post("/DigiDay/php/router.php/user/password", {user: user})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -113,7 +113,7 @@ angular.module("UserMdl", [])
         };
 
         vm.changePhoto = function (photo) {
-            $http.post("/StartUp/php/router.php/user/photo", {photo: photo})
+            $http.post("/DigiDay/php/router.php/user/photo", {photo: photo})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -128,7 +128,7 @@ angular.module("UserMdl", [])
         };
 
         vm.delete = function (password) {
-            $http.post("/StartUp/php/router.php/user/delete", {password: password})
+            $http.post("/DigiDay/php/router.php/user/delete", {password: password})
                 .success(function(data, status, headers, config) {
                         vm.getUser();
                     if(data.error) {

@@ -7,7 +7,7 @@ angular.module("UserProfileMdl", [])
         vm.user = {};
 
         vm.getUser = function () {
-            $http.get("/StartUp/php/router.php/user/me")
+            $http.get("/DigiDay/php/router.php/user/me")
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
