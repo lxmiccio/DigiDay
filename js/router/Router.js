@@ -1,4 +1,4 @@
-angular.module("RouterMdl", ["ngRoute", "AdministratorMdl", "CalendarMdl", "LoginMdl", "RegistrationMdl", "SessionMdl", "TakePartMdl", "UserMdl", "UserProfileMdl"])
+angular.module("RouterMdl", ["ngRoute", "ui.bootstrap", "AdministratorMdl", "CalendarMdl", "LoginMdl", "RegistrationMdl", "SessionMdl", "TakePartMdl", "UserMdl", "UserProfileMdl"])
 
     .config(['$routeProvider', function ($routeProvider) {
     
@@ -10,6 +10,9 @@ angular.module("RouterMdl", ["ngRoute", "AdministratorMdl", "CalendarMdl", "Logi
         });
         $routeProvider.when("/registrati", {
             templateUrl: "views/registration.html"
+        });
+        $routeProvider.when("/amministratore", {
+            templateUrl: "views/administrator/administrator.html"
         });
         $routeProvider.when("/amministratore/inserisci/aula", {
             templateUrl: "views/administrator/create/classroom.html"
