@@ -2,33 +2,13 @@ angular.module("AdministratorMdl", [])
 
     .controller("AdministratorCtrl", function ($http, $scope, $uibModal) {
 
-    $scope.items = ['item1', 'item2', 'item3'];
-
-    $scope.animationsEnabled = true;
-
-  $scope.open = function (size) {
-
-    var modalInstance = $uibModal.open({
-      animation: $scope.animationsEnabled,
-      templateUrl: 'views/administrator/update/classroom.html',
-      size: size,
-      resolve: {
-        items: function () {
-          return $scope.items;
-        }
-      }
-    });
-
-    modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
-
-  $scope.toggleAnimation = function () {
-    $scope.animationsEnabled = !$scope.animationsEnabled;
-  };
+        $scope.open = function (view) {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                size: "lg",
+                templateUrl: view
+            });
+        };
 
         var vm = this;
 
@@ -72,7 +52,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.createClassroom = function () {
-            $http.post("/StartUp/php/router.php/administrator/create/classroom", {classroom: vm.classroom})
+            $http.post("/DigiDay/php/router.php/administrator/create/classroom", {classroom: vm.classroom})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -86,7 +66,7 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.deleteClassroom = function (id) {
-            $http.post("/StartUp/php/router.php/administrator/delete/classroom", {id: id})
+            $http.post("/DigiDay/php/router.php/administrator/delete/classroom", {id: id})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
