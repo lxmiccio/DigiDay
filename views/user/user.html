@@ -1,9 +1,8 @@
-<div ng-app="UserProfileMdl" ng-controller="UserProfileCtrl as userProfile">
-    <br/>
+<div ng-app="UserMdl" ng-controller="UserController as user">
     <div class="row">
         <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1">
             <div class="row">
-                <img class="center-block img-circle img-responsive" src="{{userProfile.user.photo}}">
+                <img class="img-responsive center-block" src="{{user.user.photo}}" ng-click="open('views/user/update/image.html')">
                 <br/>
             </div>
             <div class="row">
@@ -12,9 +11,6 @@
                 </div>
                 <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
                     <button class="btn btn-primary btn-block" onclick="window.location.href = '#/utente/modifica/password';">Modifica Password</button>
-                </div>
-                <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
-                    <button class="btn btn-primary btn-block" onclick="window.location.href = '#/utente/modifica/immagine';">Modifica Immagine</button>
                 </div>
                 <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
                     <br/>
@@ -28,36 +24,37 @@
             <div class="jumbotron">
                 <div class="row" style="font-size: 30px;">
                     <div class="col-xs-10 col-xs-offset-1">
-                        <label>{{userProfile.user.firstName}} {{userProfile.user.lastName}}</label>
+                        <label>{{user.user.firstName}} {{user.user.lastName}}</label>
                     </div>
                 </div>
                 <br/><br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Email: <label>{{userProfile.user.email}}</label>
+                        Email: <label>{{user.user.email}}</label>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Data di Nascita: <label><span ng-bind="userProfile.stringToDate(userProfile.user.birthdate) | date:'dd / MM / yyyy'"></span></label>
+                        Data di Nascita: <label><span ng-bind="stringToDate(user.user.birthdate) | date:'dd / MM / yyyy'"></span></label>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Ruolo: <label>{{userProfile.user.role}}</label>
+                        Ruolo: <label>{{user.user.role}}</label>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Sesso: <label>{{userProfile.user.sex}}</label>
+                        Sesso: <label>{{user.user.sex}}</label>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!--
     <div class="row">
         <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
             <div class="jumbotron">
@@ -67,7 +64,7 @@
                     </div>
                 </div>
                 <br/>
-                <div class="well" ng-repeat="session in userProfile.sessions| limitTo: 5">
+                <div class="well" ng-repeat="session in userProfile.sessions | limitTo: 5">
                     <div class="row">
                         <div class="col-xs-10 col-xs-offset-1">
                             <label><a href="#/session/{{session.id}}" style="font-size: 20px">{{session.title}}</a></label>
@@ -93,4 +90,5 @@
             </div>
         </div>
     </div>
+    -->
 </div>

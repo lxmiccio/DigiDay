@@ -9,9 +9,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-click="administrator.deleteItem(item.id)" ng-repeat="item in administrator.items">
+                    <tr ng-click="administrator.deleteItem(item)" ng-repeat="item in administrator.items">
                         <td class="col-xs-4 text-center">{{item.name}}</td>
-                        <td class="col-xs-8 text-center">{{item.description| limitTo : 100}}</td>
+                        <td class="col-xs-8 text-center">{{item.description| limitTo : 75}}</td>
                     </tr>
                 </tbody>
             </table>

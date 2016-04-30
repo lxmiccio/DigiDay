@@ -9,9 +9,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-click="administrator.deleteTopic(topic.id)" ng-repeat="topic in administrator.topics">
+                    <tr ng-click="administrator.deleteTopic(topic)" ng-repeat="topic in administrator.topics">
                         <td class="col-xs-4 text-center">{{topic.scope}}</td>
-                        <td class="col-xs-8 text-center">{{topic.description| limitTo : 100}}</td>
+                        <td class="col-xs-8 text-center">{{topic.description| limitTo : 75}}</td>
                     </tr>
                 </tbody>
             </table>

@@ -1,23 +1,23 @@
-<div ng-app="AdministratorMdl" ng-controller="AdministratorCtrl as administrator">
+<div ng-app="DigiDayMdl" ng-controller="AdministratorCtrl as administrator">
     <div class="row">
         <div class="col-xs-12">
             <div class="col-xs-10 col-xs-offset-1">
                 <form name="itemForm" novalidate>
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                             <label for="InputName">Nome</label>
                             <div class="input-group" ng-class="itemForm.name.$error.required ? 'has-error' : 'has-success'">
-                                <input type="text" class="form-control" name="name" id="InputName" placeholder="Inserisci il Nome" required ng-model="administrator.item.name">
+                                <input type="text" class="form-control" name="name" id="InputName" placeholder="Inserisci il Nome" required ng-model="administrator.newItem.name">
                                 <span class="input-group-addon"><span class="fa fa-at"></span></span>
                             </div>
                             <hr/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                             <label for="InputDescription">Descrizione</label>
-                            <div ng-class="administrator.item.description == null || administrator.item.description.length == 0 ? '' : 'has-success'">
-                                <textarea rows="3" class="form-control" name="description" id="InputDescription" placeholder="Inserisci la Descrizione" ng-model="administrator.item.description"></textarea>
+                            <div ng-class="!administrator.newItem.description || administrator.createClassroom.description.length === 0 ? '' : 'has-success'">
+                                <textarea rows="3" class="form-control" name="description" id="InputDescription" placeholder="Inserisci la Descrizione" ng-model="administrator.newItem.description"></textarea>
                             </div>
                             <hr/>
                         </div>
@@ -25,7 +25,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-8 col-xs-offset-2">
-                                <button class="btn btn-block" ng-class="itemForm.$error.required ? 'btn-danger' : 'btn-success'" ng-click="administrator.createItem()" ng-disabled="itemForm.$error.required">Conferma</button>
+                                <button class="btn btn-block" ng-class="itemForm.$error.required ? 'btn-danger' : 'btn-success'" ng-click="administrator.createItem(administrator.newItem)" ng-disabled="itemForm.$error.required">Conferma</button>
                             </div>
                         </div>
                     </div>

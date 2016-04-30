@@ -1,6 +1,6 @@
 angular.module("AdministratorMdl", [])
 
-    .controller("AdministratorCtrl", function ($http, $scope, $uibModal) {
+    .controller("AdministratorCtrl", function ($http, $scope, $uibModal, Form) {
 
         $scope.open = function (view) {
             var modalInstance = $uibModal.open({
@@ -11,6 +11,8 @@ angular.module("AdministratorMdl", [])
         };
 
         var vm = this;
+        
+        vm.Form = Form;
 
         vm.classrooms = [];
 
@@ -27,36 +29,12 @@ angular.module("AdministratorMdl", [])
                     console.log(data);
                 });
         };
+
         vm.getClassrooms();
 
-        vm.classroom = {};
-
-        vm.isExistingClassroom = function () {
-            var bool = false;
-            if(vm.classroom.name) {
-                vm.classrooms.forEach(function (entry) {
-                    if (entry.name.toUpperCase() === vm.classroom.name.toUpperCase()) {
-                        bool = true;
-                    }
-                });
-            }
-            return bool;
-        };
-
-        vm.checkCapacity = function () {
-            if(vm.classroom.capacity != null && vm.classroom.capacity.match(/^[0-9]+$/)) {
-                if(vm.classroom.capacity < 10 || vm.classroom.capacity > 50) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return true;
-            }
-        };
-
-        vm.createClassroom = function () {
-            $http.post("/DigiDay/php/router.php/administrator/create/classroom", {classroom: vm.classroom})
+        vm.createClassroom = function (classroom) {
+            console.log(classroom);
+            $http.post("/DigiDay/php/router.php/administrator/create/classroom", {classroom: classroom})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -69,8 +47,9 @@ angular.module("AdministratorMdl", [])
                 });
         };
 
-        vm.deleteClassroom = function (id) {
-            $http.post("/DigiDay/php/router.php/administrator/delete/classroom", {id: id})
+        vm.deleteClassroom = function (classroom) {
+            console.log(classroom);
+            $http.post("/DigiDay/php/router.php/administrator/delete/classroom", {classroom: classroom})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -79,7 +58,7 @@ angular.module("AdministratorMdl", [])
                         vm.classrooms = [];
                         if (Array.isArray(array)) {
                             array.forEach(function (entry) {
-                                if(entry.id !== id) {
+                                if(entry.id !== classroom.id) {
                                     vm.classrooms.push(entry);
                                 }
                             });
@@ -91,19 +70,19 @@ angular.module("AdministratorMdl", [])
                 });
         };
 
-        vm.updateClassroom = function () {
-            $http.post("/DigiDay/php/router.php/administrator/update/classroom", {classroom: vm.classroom})
+        vm.updateClassroom = function (classroom) {
+            $http.post("/DigiDay/php/router.php/administrator/update/classroom", {classroom: classroom})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
                     } else {
                         if (Array.isArray(vm.classrooms)) {
                             vm.classrooms.forEach(function (entry, index) {
-                                if(entry.id === vm.classroom.id) {
-                                    vm.classrooms[index].name = vm.classroom.name;
-                                    vm.classrooms[index].capacity = vm.classroom.capacity;
-                                    vm.classrooms[index].features = vm.classroom.features;
-                                    vm.temporary.classroom.name = vm.classroom.name;
+                                if(entry.id === classroom.id) {
+                                    vm.classrooms[index].name = classroom.name;
+                                    vm.classrooms[index].capacity = classroom.capacity;
+                                    vm.classrooms[index].features = classroom.features;
+                                    vm.temporary.classroom.name = classroom.name;
                                 }
                             });
                         }
@@ -129,12 +108,12 @@ angular.module("AdministratorMdl", [])
                     console.log(data);
                 });
         };
+        
         vm.getItems();
 
-        vm.item = {};
-
-        vm.createItem = function () {
-            $http.post("/DigiDay/php/router.php/administrator/create/item", {item: vm.item})
+        vm.createItem = function (item) {
+            console.log(item);
+            $http.post("/DigiDay/php/router.php/administrator/create/item", {item: item})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -147,8 +126,8 @@ angular.module("AdministratorMdl", [])
                 });
         };
 
-        vm.deleteItem = function (id) {
-            $http.post("/DigiDay/php/router.php/administrator/delete/item", {id: id})
+        vm.deleteItem = function (item) {
+            $http.post("/DigiDay/php/router.php/administrator/delete/item", {item: item})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -157,7 +136,7 @@ angular.module("AdministratorMdl", [])
                         vm.items = [];
                         if (Array.isArray(array)) {
                             array.forEach(function (entry) {
-                                if(entry.id !== id) {
+                                if(entry.id !== item.id) {
                                     vm.items.push(entry);
                                 }
                             });
@@ -169,17 +148,18 @@ angular.module("AdministratorMdl", [])
                 });
         };
 
-        vm.updateItem = function () {
-            $http.post("/DigiDay/php/router.php/administrator/update/item", {item: vm.item})
+        vm.updateItem = function (item) {
+            console.log(item)
+            $http.post("/DigiDay/php/router.php/administrator/update/item", {item: item})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
                     } else {
                         if (Array.isArray(vm.items)) {
                             vm.items.forEach(function (entry, index) {
-                                if(entry.id === vm.item.id) {
-                                    vm.items[index].name = vm.item.name;
-                                    vm.items[index].description = vm.item.description;
+                                if(entry.id === item.id) {
+                                    vm.items[index].name = item.name;
+                                    vm.items[index].description = item.description;
                                 }
                             });
                         }
@@ -205,12 +185,12 @@ angular.module("AdministratorMdl", [])
                     console.log(data);
                 });
         };
+        
         vm.getTopics();
 
-        vm.topic = {};
-
-        vm.createTopic = function () {
-            $http.post("/DigiDay/php/router.php/administrator/create/topic", {topic: vm.topic})
+        vm.createTopic = function (topic) {
+            console.log(topic);
+            $http.post("/DigiDay/php/router.php/administrator/create/topic", {topic: topic})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -223,8 +203,9 @@ angular.module("AdministratorMdl", [])
                 });
         };
 
-        vm.deleteTopic = function (id) {
-            $http.post("/DigiDay/php/router.php/administrator/delete/topic", {id: id})
+        vm.deleteTopic = function (topic) {
+            var bool = false;
+            $http.post("/DigiDay/php/router.php/administrator/delete/topic", {topic: topic})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
@@ -233,7 +214,7 @@ angular.module("AdministratorMdl", [])
                         vm.topics = [];
                         if (Array.isArray(array)) {
                             array.forEach(function (entry) {
-                                if(entry.id !== id) {
+                                if(entry.id !== topic.id) {
                                     vm.topics.push(entry);
                                 }
                             });
@@ -243,19 +224,20 @@ angular.module("AdministratorMdl", [])
                 .error(function(data, status, headers, config) {
                     console.log(data);
                 });
+            return bool;
         };
 
-        vm.updateTopic = function () {
-            $http.post("/DigiDay/php/router.php/administrator/update/topic", {topic: vm.topic})
+        vm.updateTopic = function (topic) {
+            $http.post("/DigiDay/php/router.php/administrator/update/topic", {topic: topic})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
                     } else {
-                        if (Array.isArray(vm.items)) {
+                        if (Array.isArray(vm.topics)) {
                             vm.topics.forEach(function (entry, index) {
-                                if(entry.id === vm.topic.id) {
-                                    vm.topics[index].scope = vm.topic.scope;
-                                    vm.topics[index].description = vm.topic.description;
+                                if(entry.id === topic.id) {
+                                    vm.topics[index].scope = topic.scope;
+                                    vm.topics[index].description = topic.description;
                                 }
                             });
                         }

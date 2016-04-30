@@ -1,6 +1,20 @@
 angular.module("UserMdl", [])
 
-    .controller("UserController", function ($http, $location) {
+    .controller("UserController", function ($http, $location, $scope, $uibModal) {
+
+        $scope.open = function (view) {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                size: "lg",
+                templateUrl: view
+            });
+        };
+
+        $scope.stringToDate = function (string){
+            var date = new Date(string);
+            date.setDate(date.getDate() + 1);
+            return date;
+        };
 
         var vm = this;
 

@@ -228,7 +228,7 @@ $router->post("DigiDay/php/router.php/administrator/delete/classroom", function(
 
     $json = json_decode(file_get_contents('php://input'));
 
-    $id = filter_var($json->id, FILTER_SANITIZE_STRING);
+    $id = filter_var($json->classroom->id, FILTER_SANITIZE_STRING);
 
     try {
         $result = $mysql->query("DELETE FROM Aula WHERE IdAula = '" . $id . "'");
@@ -261,7 +261,7 @@ $router->post("DigiDay/php/router.php/administrator/delete/item", function() {
 
     $json = json_decode(file_get_contents('php://input'));
 
-    $id = filter_var($json->id, FILTER_SANITIZE_STRING);
+    $id = filter_var($json->item->id, FILTER_SANITIZE_STRING);
 
     try {
         $result = $mysql->query("DELETE FROM Materiale WHERE IdMateriale = '" . $id . "'");
@@ -294,7 +294,7 @@ $router->post("DigiDay/php/router.php/administrator/delete/topic", function() {
 
     $json = json_decode(file_get_contents('php://input'));
 
-    $id = filter_var($json->id, FILTER_SANITIZE_STRING);
+    $id = filter_var($json->topic->id, FILTER_SANITIZE_STRING);
 
     try {
         $result = $mysql->query("DELETE FROM Argomento WHERE IdArgomento = '" . $id . "'");
