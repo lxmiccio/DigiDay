@@ -44,10 +44,14 @@ angular.module("AdministratorMdl", [])
         };
 
         vm.checkCapacity = function () {
-            if(vm.classroom.capacity < 10 || vm.classroom.capacity > 50) {
-                return true;
+            if(vm.classroom.capacity != null && vm.classroom.capacity.match(/^[0-9]+$/)) {
+                if(vm.classroom.capacity < 10 || vm.classroom.capacity > 50) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                return true;
             }
         };
 
@@ -99,6 +103,7 @@ angular.module("AdministratorMdl", [])
                                     vm.classrooms[index].name = vm.classroom.name;
                                     vm.classrooms[index].capacity = vm.classroom.capacity;
                                     vm.classrooms[index].features = vm.classroom.features;
+                                    vm.temporary.classroom.name = vm.classroom.name;
                                 }
                             });
                         }
@@ -249,7 +254,7 @@ angular.module("AdministratorMdl", [])
                         if (Array.isArray(vm.items)) {
                             vm.topics.forEach(function (entry, index) {
                                 if(entry.id === vm.topic.id) {
-                                    vm.topics[index].name = vm.topic.name;
+                                    vm.topics[index].scope = vm.topic.scope;
                                     vm.topics[index].description = vm.topic.description;
                                 }
                             });
