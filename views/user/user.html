@@ -1,11 +1,15 @@
-<div ng-app="UserMdl" ng-controller="UserController as user">
+<div ng-app="UserMdl" ng-controller="UserCtrl as user">
+    <br/>
     <div class="row">
         <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1">
             <div class="row">
-                <img class="img-responsive center-block" src="{{user.user.photo}}" ng-click="open('views/user/update/image.html')">
+                <img class="img-responsive center-block" src="{{user.user.image}}" ng-click="open('views/user/update/image.html')">
                 <br/>
             </div>
             <div class="row">
+                <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
+                    <button class="btn btn-primary btn-block" ng-click="open('views/user/update/image.html')">Modifica Email</button>
+                </div>
                 <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
                     <button class="btn btn-primary btn-block" onclick="window.location.href = '#/utente/modifica/email';">Modifica Email</button>
                 </div>

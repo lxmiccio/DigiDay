@@ -419,7 +419,7 @@ $router->post("DigiDay/php/router.php/user/login", function() {
 
     try {
         $error = true;
-        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS photo FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS image FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
             if (crypt($password, $row["password"]) == $row["password"]) {
                 $error = false;
 
@@ -430,7 +430,7 @@ $router->post("DigiDay/php/router.php/user/login", function() {
                 $_SESSION["birthdate"] = $row["birthdate"];
                 $_SESSION["role"] = $row["role"];
                 $_SESSION["sex"] = $row["sex"];
-                $_SESSION["photo"] = $row["photo"];
+                $_SESSION["image"] = $row["image"];
             }
         }
         if ($error) {
@@ -481,7 +481,7 @@ $router->get("DigiDay/php/router.php/user/me", function() {
                 "birthdate" => $_SESSION["birthdate"],
                 "role" => $_SESSION["role"],
                 "sex" => $_SESSION["sex"],
-                "photo" => $_SESSION["photo"]
+                "image" => $_SESSION["image"]
             )
         ));
     } else {
@@ -610,7 +610,7 @@ $router->post("DigiDay/php/router.php/user/password", function() {
 
     try {
         $error = true;
-        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS photo FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS image FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
             if (crypt($oldPassword, $row["password"]) == $row["password"]) {
                 $error = false;
                 $result = $mysql->query("UPDATE Utente SET Password = '" . $password . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
@@ -644,19 +644,19 @@ $router->post("DigiDay/php/router.php/user/password", function() {
 });
 
 /**
- * Updates the user's photo
+ * Updates the user's image
  */
-$router->post("DigiDay/php/router.php/user/photo", function() {
+$router->post("DigiDay/php/router.php/user/image", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
 
-    $photo = $json->photo;
+    $image = $json->image;
 
     try {
-        $result = $mysql->query("UPDATE Utente SET Foto = '" . $photo . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
+        $result = $mysql->query("UPDATE Utente SET Foto = '" . $image . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
         if ($result->rowCount() > 0) {
-            $_SESSION["photo"] = $photo;
+            $_SESSION["image"] = $image;
             echo json_encode(array(
                 "error" => false,
                 "message" => "Immagine modificata con successo"
@@ -689,7 +689,7 @@ $router->post("DigiDay/php/router.php/user/delete", function() {
 
     try {
         $error = true;
-        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS photo FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS image FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
             if (crypt($password, $row["password"]) == $row["password"]) {
                 $error = false;
                 $result = $mysql->query("DELETE FROM Utente WHERE Matricola = '" . $_SESSION["fresher"] . "'");
@@ -740,11 +740,11 @@ $router->post("DigiDay/php/router.php/user/create", function() {
 
     try {
         if (!strcmp($sex, "Donna")) {
-            $photo = "https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-128.png";
+            $image = "https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-128.png";
         } else {
-            $photo = "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-128.png";
+            $image = "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-128.png";
         }
-        $result = $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso, Foto) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "', '" . $photo . "')");
+        $result = $mysql->query("INSERT INTO Utente (Matricola, Password, Nome, Cognome, Email, DataNascita, Ruolo, Sesso, Foto) VALUES ('" . $fresher . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $email . "', '" . $birthdate . "', '" . $role . "', '" . $sex . "', '" . $image . "')");
         if ($result->rowCount() > 0) {
             $_SESSION["fresher"] = $fresher;
             $_SESSION["firstName"] = $firstName;
@@ -753,7 +753,7 @@ $router->post("DigiDay/php/router.php/user/create", function() {
             $_SESSION["birthdate"] = $birthdate;
             $_SESSION["role"] = $role;
             $_SESSION["sex"] = $sex;
-            $_SESSION["photo"] = $photo;
+            $_SESSION["image"] = $image;
 
             echo json_encode(array(
                 "error" => false,

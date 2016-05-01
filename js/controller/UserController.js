@@ -1,12 +1,20 @@
 angular.module("UserMdl", [])
 
-    .controller("UserController", function ($http, $location, $scope, $uibModal) {
+    .controller("UserCtrl", function ($http, $location, $scope, $uibModal) {
 
         $scope.open = function (view) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 size: "lg",
-                templateUrl: view
+                templateUrl: view,
+                controller: function ($scope, $uibModalInstance) {
+                    $scope.ok = function () {
+                        $uibModalInstance.close();
+                    };
+                    $scope.cancel = function () {
+                        $uibModalInstance.dismiss("cancel");
+                    };
+                }
             });
         };
 
@@ -33,7 +41,7 @@ angular.module("UserMdl", [])
                         vm.user.birthdate = data.user.birthdate;
                         vm.user.role = data.user.role;
                         vm.user.sex = data.user.sex;
-                        vm.user.photo = data.user.photo;
+                        vm.user.image = data.user.image;
                     }
                 })
                 .error(function(data, status, headers, config) {
@@ -126,14 +134,14 @@ angular.module("UserMdl", [])
                 });
         };
 
-        vm.changePhoto = function (photo) {
-            $http.post("/DigiDay/php/router.php/user/photo", {photo: photo})
+        vm.updateImage = function (image) {
+            $http.post("/DigiDay/php/router.php/user/image", {image: image})
                 .success(function(data, status, headers, config) {
                     if(data.error) {
                         console.log(data);
                     } else {
                         vm.getUser();
-                        $location.path("/utente");
+                        $scope.cancel();
                     }
                 })
                 .error(function(data, status, headers, config) {
