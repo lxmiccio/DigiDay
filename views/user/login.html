@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="col-xs-10 col-xs-offset-1">
+            <form name="loginForm" novalidate>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="InputFresher">Matricola</label>
+                        <div class="input-group" ng-class="loginForm.fresher.$error.required || Form.isNewFresher(freshers, logUser.fresher) ? 'has-error' : 'has-success'">
+                            <input type="text" class="form-control" name="fresher" id="InputFresher" placeholder="Inserisci la Matricola" required ng-model="logUser.fresher">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-tag"></span></span>
+                        </div>
+                        <hr/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="InputPassword">Password</label>
+                        <div class="input-group" ng-class="loginForm.password.$error.required ? 'has-error' : 'has-success'">
+                            <input type="password" class="form-control" name="password" id="InputPassword" placeholder="Inserisci la Password" required ng-model="logUser.password">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                        </div>
+                        <hr/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-8 col-xs-offset-2">
+                            <button class="btn btn-block" ng-class="loginForm.$invalid || Form.isNewFresher(freshers, logUser.fresher) ? 'btn-danger' : 'btn-success'" ng-click="login(logUser)" ng-disabled="loginForm.$invalid || Form.isNewFresher(freshers, logUser.fresher)">Accedi</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -606,14 +606,14 @@ $router->post("DigiDay/php/router.php/user/password", function() {
     $json = json_decode(file_get_contents('php://input'));
 
     $oldPassword = $json->user->oldPassword;
-    $password = crypt($json->user->password, "$2y$10$" . substr(md5(uniqid(rand(), true)), 0, 22));
+    $newPassword = crypt($json->user->newPassword, "$2y$10$" . substr(md5(uniqid(rand(), true)), 0, 22));
 
     try {
         $error = true;
         foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS image FROM Utente WHERE LOWER(Matricola) = '" . $_SESSION["fresher"] . "' LIMIT 1") as $row) {
             if (crypt($oldPassword, $row["password"]) == $row["password"]) {
                 $error = false;
-                $result = $mysql->query("UPDATE Utente SET Password = '" . $password . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
+                $result = $mysql->query("UPDATE Utente SET Password = '" . $newPassword . "' WHERE Matricola = '" . $_SESSION["fresher"] . "'");
                 if ($result->rowCount() > 0) {
                     echo json_encode(array(
                         "error" => false,
@@ -734,10 +734,12 @@ $router->post("DigiDay/php/router.php/user/create", function() {
     $firstName = filter_var($json->user->firstName, FILTER_SANITIZE_STRING);
     $lastName = filter_var($json->user->lastName, FILTER_SANITIZE_STRING);
     $email = filter_var($json->user->email, FILTER_SANITIZE_EMAIL);
+    echo $json->user->birthdate;
     $birthdate = date("Y-m-d", strtotime(filter_var($json->user->birthdate, FILTER_SANITIZE_STRING)));
+    echo $birthdate;
     $role = filter_var($json->user->role, FILTER_SANITIZE_STRING);
     $sex = filter_var($json->user->sex, FILTER_SANITIZE_STRING);
-
+    var_dump($json);
     try {
         if (!strcmp($sex, "Donna")) {
             $image = "https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-128.png";
@@ -981,7 +983,6 @@ $router->post("DigiDay/php/router.php/session/create", function() {
     require_once "connection.php";
 
     $json = json_decode(file_get_contents('php://input'));
-    var_dump($json);
     $title = filter_var($json->session->title, FILTER_SANITIZE_STRING);
     $startingDate = date("Y-m-d H:i:s", strtotime(filter_var($json->session->startingDate, FILTER_SANITIZE_STRING)));
     $endingDate = date("Y-m-d H:i:s", strtotime(filter_var($json->session->endingDate, FILTER_SANITIZE_STRING)));
@@ -989,18 +990,18 @@ $router->post("DigiDay/php/router.php/session/create", function() {
     $details = filter_var($json->session->details, FILTER_SANITIZE_STRING);
     $items = $json->session->items;
     $creator = $_SESSION["fresher"];
-    $classroom = filter_var($json->session->classroom, FILTER_SANITIZE_STRING);
-    $topic = filter_var($json->session->topic, FILTER_SANITIZE_STRING);
+    $classroom = filter_var($json->session->classroom->id, FILTER_SANITIZE_STRING);
+    $topic = filter_var($json->session->topic->id, FILTER_SANITIZE_STRING);
 
     try {
-        echo "INSERT INTO Sessione (Titolo, DataInizio, DataFine, NumeroMassimo, Dettagli, MatricolaCreatore, IdAula, IdArgomento) VALUES ('" . $title . "', '" . $startingDate . ':00' . "', '" . $endingDate . ':00' . "', '" . $maxPartecipants . "', '" . $details . "', " . $creator . ", '" . $classroom . "', (SELECT IdArgomento FROM Argomento WHERE Ambito='" . $topic . "'))";
-        $result = $mysql->query("INSERT INTO Sessione (Titolo, DataInizio, DataFine, NumeroMassimo, Dettagli, MatricolaCreatore, IdAula, IdArgomento) VALUES ('" . $title . "', '" . $startingDate . ':00' . "', '" . $endingDate . ':00' . "', '" . $maxPartecipants . "', '" . $details . "', " . $creator . ", '" . $classroom . "', (SELECT IdArgomento FROM Argomento WHERE Ambito='" . $topic . "'))");
+        echo "INSERT INTO Sessione (Titolo, DataInizio, DataFine, NumeroMassimo, Dettagli, MatricolaCreatore, IdAula, IdArgomento) VALUES ('" . $title . "', '" . $startingDate . ':00' . "', '" . $endingDate . ':00' . "', '" . $maxPartecipants . "', '" . $details . "', '" . $creator . "', '" . $classroom . "', '" . $topic . "')";
+        $result = $mysql->query("INSERT INTO Sessione (Titolo, DataInizio, DataFine, NumeroMassimo, Dettagli, MatricolaCreatore, IdAula, IdArgomento) VALUES ('" . $title . "', '" . $startingDate . ':00' . "', '" . $endingDate . ':00' . "', '" . $maxPartecipants . "', '" . $details . "', '" . $creator . "', '" . $classroom . "', '" . $topic . "')");
 
         if ($result->rowCount() > 0) {
             $id = $mysql->lastInsertId();
 
             foreach ($items as $item) {
-                $mysql->query("INSERT INTO Richiede (IdSessione, IdMateriale) VALUES (" . $id . ", " . $item . ")");
+                $mysql->query("INSERT INTO Richiede (IdSessione, IdMateriale) VALUES (" . $id . ", " . $item->id . ")");
             }
 
             echo json_encode(array(
