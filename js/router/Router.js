@@ -1,4 +1,4 @@
-angular.module("DigiDayMdl", ["ngRoute", "nya.bootstrap.select", "ui.bootstrap", "AdministratorMdl", "CalendarMdl", "SessionMdl", "TakePartMdl", "UserMdl"])
+angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select", "ui.bootstrap", "AdministratorMdl", "CalendarMdl", "SessionMdl", "TakePartMdl", "UserMdl"])
 
         .config(["$routeProvider", function ($routeProvider) {
 

@@ -335,8 +335,9 @@ $router->get("DigiDay/php/router.php/user/sessions/calendar", function() {
         foreach ($mysql->query("SELECT Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxNumber, Dettagli AS details FROM Sessione WHERE MatricolaCreatore = '" . $_SESSION["fresher"] . "'") as $row) {
             $array[] = array(
                 "title" => $row["title"],
-                "start" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                "end" => str_replace(" ", "T", $row["endingDate"]) . "Z"
+                "type" => "info",
+                "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z"
             );
         }
         echo json_encode(array(
@@ -361,12 +362,22 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxNumber, Dettagli AS details FROM Sessione") as $row) {
-            $array[] = array(
-                "title" => $row["title"],
-                "start" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                "end" => str_replace(" ", "T", $row["endingDate"]) . "Z"
-            );
+        foreach ($mysql->query("SELECT Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxNumber, Dettagli AS details, MatricolaCreatore AS fresher FROM Sessione") as $row) {
+            if (!strcmp($row["fresher"], $_SESSION["fresher"])) {
+                $array[] = array(
+                    "title" => $row["title"],
+                    "type" => "info",
+                    "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                    "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z"
+                );
+            } else {
+                $array[] = array(
+                    "title" => $row["title"],
+                    "type" => "important",
+                    "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                    "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z"
+                );
+            }
         }
         echo json_encode(array(
             "error" => false,
@@ -419,7 +430,7 @@ $router->post("DigiDay/php/router.php/user/login", function() {
 
     try {
         $error = true;
-        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS image FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
+        foreach ($mysql->query("SELECT Matricola AS fresher, Password AS password, Nome AS firstName, Cognome AS lastName, Email AS email, Amministratore AS administrator, DataNascita AS birthdate, Ruolo AS role, Sesso AS sex, Foto AS image FROM Utente WHERE LOWER(Matricola) = '" . strtolower($fresher) . "' LIMIT 1") as $row) {
             if (crypt($password, $row["password"]) == $row["password"]) {
                 $error = false;
 
@@ -427,6 +438,7 @@ $router->post("DigiDay/php/router.php/user/login", function() {
                 $_SESSION["firstName"] = $row["firstName"];
                 $_SESSION["lastName"] = $row["lastName"];
                 $_SESSION["email"] = $row["email"];
+                $_SESSION["administrator"] = $row["administrator"];
                 $_SESSION["birthdate"] = $row["birthdate"];
                 $_SESSION["role"] = $row["role"];
                 $_SESSION["sex"] = $row["sex"];
@@ -478,6 +490,7 @@ $router->get("DigiDay/php/router.php/user/me", function() {
                 "firstName" => $_SESSION["firstName"],
                 "lastName" => $_SESSION["lastName"],
                 "email" => $_SESSION["email"],
+                "administrator" => $_SESSION["administrator"],
                 "birthdate" => $_SESSION["birthdate"],
                 "role" => $_SESSION["role"],
                 "sex" => $_SESSION["sex"],
@@ -752,6 +765,7 @@ $router->post("DigiDay/php/router.php/user/create", function() {
             $_SESSION["firstName"] = $firstName;
             $_SESSION["lastName"] = $lastName;
             $_SESSION["email"] = $email;
+            $_SESSION["administrator"] = false;
             $_SESSION["birthdate"] = $birthdate;
             $_SESSION["role"] = $role;
             $_SESSION["sex"] = $sex;

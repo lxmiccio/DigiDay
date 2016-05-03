@@ -126,10 +126,12 @@ angular.module("UserMdl", [])
                                 vm.user.firstName = data.user.firstName;
                                 vm.user.lastName = data.user.lastName;
                                 vm.user.email = data.user.email;
+                                vm.user.administrator = data.user.administrator;
                                 vm.user.birthdate = data.user.birthdate;
                                 vm.user.role = data.user.role;
                                 vm.user.sex = data.user.sex;
                                 vm.user.image = data.user.image;
+                                console.log(vm.user);
                             }
                         })
                         .error(function (data, status, headers, config) {
@@ -138,6 +140,18 @@ angular.module("UserMdl", [])
             };
 
             vm.getUser();
+
+            vm.isAdministrator = function () {
+                if (vm.user) {
+                    if (vm.user.administrator == 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            };
 
             vm.isAuthenticated = function () {
                 if (vm.user) {
@@ -158,7 +172,7 @@ angular.module("UserMdl", [])
                                 console.log(data);
                             } else {
                                 vm.getUser();
-                                $location.path("/utente");
+                                //$location.path("/utente");
                             }
                         })
                         .error(function (data, status, headers, config) {

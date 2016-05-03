@@ -74,18 +74,6 @@ angular.module("SessionMdl", [])
                             console.log(data);
                         });
             };
-
-            vm.decreaseMaxPartecipants = function () {
-                if (vm.session.maxPartecipants > 3) {
-                    vm.session.maxPartecipants--;
-                }
-            };
-
-            vm.increaseMaxPartecipants = function () {
-                if (vm.session.maxPartecipants < 25) {
-                    vm.session.maxPartecipants++;
-                }
-            };
         })
 
         .filter("available", function () {
