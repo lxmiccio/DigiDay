@@ -1,0 +1,36 @@
+<div class="row" ng-app="DigiDayMdl">
+    <div class="col-xs-10 col-sm-offset-1">
+        <div class="text-center"><h2>{{event.title}}</h2></div>
+        <div class="text-center"><h2>{{user}}</h2></div>
+        <br/>
+        <br/>
+    </div>
+    <div class="col-xs-10 col-sm-offset-1" ng-hide="event.details">
+        <div class="well well-lg">Dettagli non disponibili</div>
+        <br/>
+    </div>
+    <div class="col-xs-10 col-sm-offset-1" ng-show="event.details">
+        <div class="well well-lg">{{event.details}}</div>
+        <br/>
+    </div>
+    <div class="col-xs-10 col-sm-offset-1">
+        <div class="pull-right"><h4>{{event.creator.firstName}} {{event.creator.lastName}}</h4></div>
+        <br/>
+        <br/>
+    </div>
+    <div class="col-xs-10 col-sm-offset-1">
+        <div class="pull-right">{{event.partecip}} / {{event.partecipants}}</div>
+        <br/>
+        <br/>
+    </div>
+    <div class="col-xs-10 col-sm-offset-1">
+        <div class="pull-right">{{stringToDate(event.startingDate) | date:"dd/MM/yyyy HH:mm"}} - {{stringToDate(event.startingDate) | date:"HH:mm"}}</div>
+        <br/>
+        <br/>
+    </div>
+    <div class="col-xs-10 col-sm-offset-1" ng-hide="user.isAuthenticated()">
+        <div class="alert alert-danger">
+            <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+        </div>
+    </div>
+</div>

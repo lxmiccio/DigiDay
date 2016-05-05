@@ -1,6 +1,37 @@
 angular.module("CalendarMdl", [])
 
-        .controller("CalendarCtrl", function ($http, $scope) {
+        .controller("CalendarCtrl", function ($http, $scope, $uibModal) {
+
+            $scope.openSession = function (view, event) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    size: "lg",
+                    templateUrl: view,
+                    resolve: {
+                        event: function () {
+                            return event;
+                        }
+                    },
+                    controller: function ($http, $location, $scope, $uibModalInstance, event) {
+
+                        $scope.ok = function () {
+                            $uibModalInstance.close();
+                        };
+
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss("cancel");
+                        };
+
+                        $scope.event = event;
+
+                        $scope.stringToDate = function (stringDate) {
+                            var date = new Date(stringDate);
+                            date.setDate(date.getDate() + 1);
+                            return date;
+                        };
+                    }
+                });
+            };
 
             var vm = this;
 
@@ -16,6 +47,7 @@ angular.module("CalendarMdl", [])
                                     vm.events.push(entry);
                                 });
                             }
+                            console.log(vm.events)
                         })
                         .error(function (data, status, headers, config) {
                             console.log(data);
@@ -27,22 +59,27 @@ angular.module("CalendarMdl", [])
             vm.viewDate = new Date();
 
             vm.eventClicked = function (event) {
+                $scope.openSession("views/calendar/session.html", event);
                 console.log(event);
             };
 
             vm.eventEdited = function (event) {
+                $scope.openSession("views/calendar/session.html", event);
                 console.log(event);
             };
 
             vm.eventDeleted = function (event) {
+                $scope.openSession("views/calendar/session.html", event);
                 console.log(event);
             };
 
             vm.eventTimesChanged = function (event) {
+                $scope.openSession("views/calendar/session.html", event);
                 console.log(event);
             };
 
             vm.toggle = function ($event, field, event) {
+                $scope.openSession("views/calendar/session.html", event);
                 $event.preventDefault();
                 $event.stopPropagation();
                 event[field] = !event[field];

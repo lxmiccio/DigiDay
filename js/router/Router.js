@@ -3,7 +3,7 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
         .config(["$routeProvider", function ($routeProvider) {
 
                 $routeProvider.when("/", {
-                    templateUrl: "views/calendar.html"
+                    templateUrl: "views/calendar/calendar.html"
                 });
                 $routeProvider.when("/accedi", {
                     templateUrl: "views/login.html"
@@ -87,7 +87,6 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
                 },
                 isInvalidMaximumPartecipants: function (capacity, maximumPartecipants) {
                     var bool = true;
-                    console.log(maximumPartecipants)
                     if (capacity) {
                         if (maximumPartecipants) {
                             if (maximumPartecipants.toString().match(/^[0-9]+$/)) {

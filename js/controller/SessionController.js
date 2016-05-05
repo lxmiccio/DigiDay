@@ -76,7 +76,7 @@ angular.module("SessionMdl", [])
             };
         })
 
-        .filter("available", function () {
+        .filter("availableClassrooms", function () {
             return function (classrooms, startingDate, endingDate) {
                 if (angular.isArray(classrooms)) {
                     var array = [];
@@ -101,6 +101,35 @@ angular.module("SessionMdl", [])
                     return array;
                 } else {
                     return classrooms;
+                }
+            };
+        })
+
+        .filter("availableItems", function () {
+            return function (items, startingDate, endingDate) {
+                if (angular.isArray(items)) {
+                    var array = [];
+                    items.forEach(function (entry) {
+                        if (entry.sessions === null) {
+                            array.push(entry);
+                        } else {
+                            var free = true;
+                            entry.sessions.forEach(function (session) {
+                                if ((!(startingDate < session.startingDate)) && (!(startingDate > session.endingDate))
+                                        || (!(session.startingDate < startingDate)) && (!(session.startingDate > endingDate))
+                                        || (!(endingDate < session.startingDate)) && (!(endingDate > session.endingDate))
+                                        || (!(session.endingDate < startingDate)) && (!(session.endingDate > endingDate))) {
+                                    free = false;
+                                }
+                            });
+                            if (free) {
+                                array.push(entry);
+                            }
+                        }
+                    });
+                    return array;
+                } else {
+                    return items;
                 }
             };
         });

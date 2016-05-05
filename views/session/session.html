@@ -60,7 +60,7 @@
                             <label for="InputClassroom">Aula</label>
                             <div ng-class="sessionForm.classroom.$error.required ? 'has-error' : 'has-success'">
                                 <ol class="form-control nya-bs-select col-xs-12" name="classroom" id="InputClassroom" required ng-model="newSession.classroom">
-                                    <li nya-bs-option="classroom in session.classrooms | available:newSession.startingDate:newSession.endingDate">
+                                    <li nya-bs-option="classroom in session.classrooms | availableClassrooms:newSession.startingDate:newSession.endingDate">
                                         <a>
                                             {{classroom.name}}
                                         </a>
@@ -75,11 +75,11 @@
                             <label for="InputMaxPartecipants">Partecipanti</label>
                             <div class="input-group number-spinner" ng-class="session.Form.isInvalidMaximumPartecipants(newSession.classroom.capacity, newSession.maxPartecipants) ? 'has-error' : 'has-success'">
                                 <span class="input-group-btn">
-                                    <button class="btn" data-dir="dwn" ng-class="session.Form.isInvalidMaximumPartecipants(newSession.classroom.capacity, newSession.maxPartecipants) ? 'btn-danger' : 'btn-success'" ng-click="newSession.maxPartecipants=newSession.maxPartecipants-1"><span class="glyphicon glyphicon-minus"></span></button>
+                                    <button class="btn" data-dir="dwn" ng-class="session.Form.isInvalidMaximumPartecipants(newSession.classroom.capacity, newSession.maxPartecipants) ? 'btn-danger' : 'btn-success'" ng-click="newSession.maxPartecipants = newSession.maxPartecipants - 1"><span class="glyphicon glyphicon-minus"></span></button>
                                 </span>
                                 <input type="text" class="form-control text-center" name="maxPartecipants" id="InputMaxPartecipants" placeholder="Inserisci il numero di Partecipanti" required ng-model="newSession.maxPartecipants">
                                 <span class="input-group-btn">
-                                    <button class="btn" data-dir="up" ng-class="session.Form.isInvalidMaximumPartecipants(newSession.classroom.capacity, newSession.maxPartecipants) ? 'btn-danger' : 'btn-success'" ng-click="newSession.maxPartecipants=newSession.maxPartecipants+1"><span class="glyphicon glyphicon-plus"></span></button>
+                                    <button class="btn" data-dir="up" ng-class="session.Form.isInvalidMaximumPartecipants(newSession.classroom.capacity, newSession.maxPartecipants) ? 'btn-danger' : 'btn-success'" ng-click="newSession.maxPartecipants = newSession.maxPartecipants + 1"><span class="glyphicon glyphicon-plus"></span></button>
                                 </span>
                             </div>
                             <hr/>
@@ -90,7 +90,7 @@
                             <label for="InputItems">Materiali</label>
                             <div ng-class="sessionForm.items.$error.required ? 'has-error' : 'has-success'">
                                 <ol class="form-control nya-bs-select col-xs-12" name="items" id="InputItems" multiple required ng-model="newSession.items">
-                                    <li nya-bs-option="item in session.items | available:newSession.startingDate:newSession.endingDate">
+                                    <li nya-bs-option="item in session.items | availableItems:newSession.startingDate:newSession.endingDate">
                                         <a>
                                             {{item.name}}
                                         </a>

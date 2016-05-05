@@ -332,12 +332,31 @@ $router->get("DigiDay/php/router.php/user/sessions/calendar", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxNumber, Dettagli AS details FROM Sessione WHERE MatricolaCreatore = '" . $_SESSION["fresher"] . "'") as $row) {
+        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Nome AS creatorFirstName, Cognome AS creatorLastName, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola") as $row) {
             $array[] = array(
-                "title" => $row["title"],
+                "id" => $row["sessionId"],
                 "type" => "info",
+                "title" => $row["title"],
+                "startingDate" => $row['startingDate'],
+                "endingDate" => $row['endingDate'],
                 "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z"
+                "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
+                "partecipants" => $row["partecipants"],
+                "details" => $row["details"],
+                "creator" => array(
+                    "id" => $row["creatorFresher"],
+                    "firstName" => $row["creatorFirstName"],
+                    "lastName" => $row["creatorLastName"]
+                ),
+                "class" => array(
+                    "id" => $row["classId"]
+                ),
+                "topic" => array(
+                    "id" => $row["topicId"]
+                ),
+                "material" => array(
+                    "id" => $row["itemId"]
+                )
             );
         }
         echo json_encode(array(
@@ -362,20 +381,89 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxNumber, Dettagli AS details, MatricolaCreatore AS fresher FROM Sessione") as $row) {
-            if (!strcmp($row["fresher"], $_SESSION["fresher"])) {
-                $array[] = array(
-                    "title" => $row["title"],
-                    "type" => "info",
-                    "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                    "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z"
-                );
+        foreach ($mysql->query("SELECT COUNT(*)-1 AS partecip, Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Nome AS creatorFirstName, Cognome AS creatorLastName, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione LEFT JOIN Partecipa ON Sessione.IdSessione = Partecipa.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola GROUP BY (Sessione.IdSessione)") as $row) {
+            if (isset($_SESSION["fresher"])) {
+                if (!strcmp($row["creatorFresher"], $_SESSION["fresher"])) {
+                    $array[] = array(
+                        "id" => $row["sessionId"],
+                        "type" => "important",
+                        "title" => $row["title"],
+                        "startingDate" => $row["startingDate"],
+                        "endingDate" => $row["endingDate"],
+                        "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                        "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
+                        "partecip" => $row["partecip"],
+                        "partecipants" => $row["partecipants"],
+                        "details" => $row["details"],
+                        "creator" => array(
+                            "id" => $row["creatorFresher"],
+                            "firstName" => $row["creatorFirstName"],
+                            "lastName" => $row["creatorLastName"]
+                        ),
+                        "class" => array(
+                            "id" => $row["classId"]
+                        ),
+                        "topic" => array(
+                            "id" => $row["topicId"]
+                        ),
+                        "material" => array(
+                            "id" => $row["itemId"]
+                        )
+                    );
+                } else {
+                    $array[] = array(
+                        "id" => $row["sessionId"],
+                        "type" => "info",
+                        "title" => $row["title"],
+                        "startingDate" => $row["startingDate"],
+                        "endingDate" => $row["endingDate"],
+                        "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                        "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
+                        "partecip" => $row["partecip"],
+                        "partecipants" => $row["partecipants"],
+                        "details" => $row["details"],
+                        "creator" => array(
+                            "id" => $row["creatorFresher"],
+                            "firstName" => $row["creatorFirstName"],
+                            "lastName" => $row["creatorLastName"]
+                        ),
+                        "class" => array(
+                            "id" => $row["classId"]
+                        ),
+                        "topic" => array(
+                            "id" => $row["topicId"]
+                        ),
+                        "material" => array(
+                            "id" => $row["itemId"]
+                        )
+                    );
+                }
             } else {
                 $array[] = array(
+                    "id" => $row["sessionId"],
+                    "type" => "info",
                     "title" => $row["title"],
-                    "type" => "important",
+                    "startingDate" => $row["startingDate"],
+                    "endingDate" => $row["endingDate"],
                     "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                    "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z"
+                    "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
+                    "partecip" => $row["partecip"],
+                    "partecipants" => $row["partecipants"],
+                    "details" => $row["details"],
+                    "creator" => array(
+                        "id" => $row["creatorFresher"],
+                        "firstName" => $row["creatorFirstName"],
+                        "lastName" => $row["creatorLastName"]
+                    ),
+                    "class" => array(
+                        "id" => $row["classId"]
+                    ),
+                    "topic" => array(
+                        "id" => $row["topicId"]
+                    ),
+                    "material" => array(
+                        "id" => $row["itemId"]
+                    )
                 );
             }
         }
