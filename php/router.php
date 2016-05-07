@@ -21,7 +21,11 @@ $router->post("DigiDay/php/router.php/administrator/create/classroom", function(
 
     $name = filter_var($json->classroom->name, FILTER_SANITIZE_STRING);
     $capacity = filter_var($json->classroom->capacity, FILTER_SANITIZE_NUMBER_INT);
-    $features = filter_var($json->classroom->features, FILTER_SANITIZE_STRING);
+    if (isset($json->classroom->features)) {
+        $features = filter_var($json->classroom->features, FILTER_SANITIZE_STRING);
+    } else {
+        $features = null;
+    }
 
     try {
         $result = $mysql->query("INSERT INTO Aula (Nome, Capienza, Caratteristiche) VALUES ('" . $name . "', " . $capacity . ", '" . $features . "')");
@@ -55,7 +59,11 @@ $router->post("DigiDay/php/router.php/administrator/create/item", function() {
     $json = json_decode(file_get_contents('php://input'));
 
     $name = filter_var($json->item->name, FILTER_SANITIZE_STRING);
-    $description = filter_var($json->item->description, FILTER_SANITIZE_STRING);
+    if (isset($json->item->description)) {
+        $description = filter_var($json->item->description, FILTER_SANITIZE_STRING);
+    } else {
+        $description = null;
+    }
 
     try {
         $result = $mysql->query("INSERT INTO Materiale (Nome, Descrizione) VALUES ('" . $name . "', '" . $description . "')");
@@ -89,19 +97,23 @@ $router->post("DigiDay/php/router.php/administrator/create/topic", function() {
     $json = json_decode(file_get_contents('php://input'));
 
     $scope = filter_var($json->topic->scope, FILTER_SANITIZE_STRING);
-    $description = filter_var($json->topic->description, FILTER_SANITIZE_STRING);
+    if (isset($json->topic->description)) {
+        $description = filter_var($json->topic->description, FILTER_SANITIZE_STRING);
+    } else {
+        $description = null;
+    }
 
     try {
         $result = $mysql->query("INSERT INTO Argomento (Ambito, Descrizione) VALUES ('" . $scope . "', '" . $description . "')");
         if ($result->rowCount() > 0) {
             echo json_encode(array(
                 "error" => false,
-                "message" => "Materiale aggiunto con successo"
+                    "message" => "Argomento aggiunto con successo"
             ));
         } else {
             echo json_encode(array(
                 "error" => false,
-                "message" => "Impossibile aggiungere il Materiale"
+                "message" => "Impossibile aggiungere l'Argomento"
             ));
         }
     } catch (PDOException $exception) {

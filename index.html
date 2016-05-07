@@ -40,7 +40,7 @@
         <script src="js/controller/SessionController.js"></script>
         <script src="js/controller/TakePartController.js"></script>
         <script src="js/controller/UserController.js"></script>
-        <script src="js/router/Router.js"></script>
+        <script src="js/digiday/DigiDay.js"></script>
         <style type="text/css">
             .error {
                 color: red;
@@ -61,7 +61,7 @@
             }
         </style>
     </head>
-    <body  ng-controller="UserCtrl as user">
+    <body  ng-controller="HomeCtrl as home">
         <div id="wrapper">
             <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
@@ -82,10 +82,10 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a ng-click="open('views/user/login.html')" ng-hide="user.isAuthenticated()"><i class="fa fa-sign-in fa-fw"></i> Accedi</a></li>
-                            <li><a ng-click="open('views/user/create.html')" ng-hide="user.isAuthenticated()"><i class="fa fa-user-plus fa-fw"></i> Registrati</a></li>
-                            <li><a href="#/utente" ng-show="user.isAuthenticated()"><i class="fa fa-info-circle fa-fw"></i> Profilo</a></li>
-                            <li><a href="#" ng-click="user.logout()" ng-show="user.isAuthenticated()"><i class="fa fa-sign-out fa-fw"></i> Esci</a></li>
+                            <li><a ng-click="open('views/user/login.html')" ng-hide="home.User.isAuthenticated()"><i class="fa fa-sign-in fa-fw"></i> Accedi</a></li>
+                            <li><a ng-click="open('views/user/create.html')" ng-hide="home.User.isAuthenticated()"><i class="fa fa-user-plus fa-fw"></i> Registrati</a></li>
+                            <li><a href="#/utente" ng-show="home.User.isAuthenticated()"><i class="fa fa-info-circle fa-fw"></i> Profilo</a></li>
+                            <li><a href="#" ng-click="home.User.logout()" ng-show="home.User.isAuthenticated()"><i class="fa fa-sign-out fa-fw"></i> Esci</a></li>
                         </ul>
                     </li>
                     <li class="dropdown pull-right">
@@ -141,8 +141,9 @@
             <div id="page-wrapper">
             -->
             <div class="container-fluid">
-                <br/>
+                <br/><br/>
                 <div ng-view=""></div>
+                <br/>
             </div>
             <!--
             </div>

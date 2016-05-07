@@ -1,21 +1,68 @@
+<style>
+    .avatar{
+        background-image: url("http://www.w3schools.com/angular/pic_angular.jpg");
+        background-size: cover;
+        border: 2px solid #AAA;
+        border-radius: 100%;
+        height: 100px;
+        width: 100px;
+    }
+
+    .form-box .form-control-first {
+        border-radius: 5px 5px 0px 0px;
+    }
+
+    .form-box .form-control-middle {
+        border-radius: 0px 0px 0px 0px;
+        border-top: 0;
+    }
+
+    .form-box .form-control-last {
+        border-radius: 0px 0px 5px 5px;
+    }
+
+    .form-box .button{
+        margin-top: 20px;
+        padding: 10px 20px;
+    }
+</style>
 <div class="row">
-    <div class="col-sm-10 col-sm-offset-1">
-        <form name="emailForm" novalidate>
-            <div class="form-group">
-                <label for="InputEmail">Email</label>
-                <div class="input-group" ng-class="emailForm.email.$error.required || Form.isInvalidEmail(newEmail) || Form.isExistingEmail(emails, newEmail) ? 'has-error' : 'has-success'">
-                    <input type="text" class="form-control" name="email" id="InputEmail" placeholder="Inserisci il nuovo indirizzo Email" required ng-model="newEmail">
-                    <span class="input-group-addon"><span class="fa fa-at"></span></span>
-                </div>
-                <hr/>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-8 col-xs-offset-2">
-                        <button class="btn btn-block" ng-class="emailForm.$error.required || Form.isInvalidEmail(newEmail) || Form.isExistingEmail(emails, newEmail) ? 'btn-danger' : 'btn-success'" ng-click="updateEmail(newEmail)" ng-disabled="emailForm.$error.required || Form.isInvalidEmail(newEmail) || Form.isExistingEmail(emails, newEmail)">Conferma</button>
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="avatar center-block"></div>
+        <br/>
+        <div class="form-box">
+            <form name="emailForm" novalidate>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <div ng-class="emailForm.email.$error.required || Form.isInvalidEmail(email) || Form.isExistingEmail(emails, email) ? 'has-error' : 'has-success'">
+                            <input type="text" class="form-control text-center" name="email" placeholder="Email" required ng-model="email">
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <button class="btn btn-block button" ng-class="emailForm.$error.required || Form.isInvalidEmail(email) || Form.isExistingEmail(emails, email) ? 'btn-danger' : 'btn-success'" ng-click="updateEmail(email)" ng-disabled="emailForm.$error.required || Form.isInvalidEmail(email) || Form.isExistingEmail(emails, email)">Conferma</button>
+                    </div>
+                </div>
+                <div class="row" ng-show="showSuccessMessage">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="alert-group">
+                            <div class="alert alert-success">
+                                <div class="text-center"><strong>{{message}}</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="showErrorMessage">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="alert-group">
+                            <div class="alert alert-danger">
+                                <div class="text-center"><strong>{{message}}</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

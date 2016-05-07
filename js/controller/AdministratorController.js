@@ -1,11 +1,11 @@
 angular.module("AdministratorMdl", [])
 
-        .controller("AdministratorCtrl", function ($http, $scope, $uibModal, Form) {
+        .controller("AdministratorCtrl", function ($http, $scope, $uibModal, Form, User) {
 
-            $scope.openAdministrator = function (view) {
+            $scope.openAdministrator = function (size, view) {
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    controller: function ($scope, $uibModalInstance, Form, classrooms, items, topics, createClassroom, createItem, createTopic) {
+                    controller: function ($scope, $timeout, $uibModalInstance, Form, User, classrooms, items, topics, createClassroom, createItem, createTopic) {
 
                         $scope.ok = function () {
                             $uibModalInstance.close();
@@ -16,32 +16,56 @@ angular.module("AdministratorMdl", [])
                         };
 
                         $scope.Form = Form;
+                        $scope.User = User;
 
-                        $scope.classrooms = classrooms;
+                        $scope.classrooms = angular.copy(classrooms);
 
-                        $scope.items = items;
+                        $scope.items = angular.copy(items);
 
-                        $scope.topics = topics;
+                        $scope.topics = angular.copy(topics);
 
+                        $scope.showMessage = false;
                         $scope.createClassroom = function (classroom) {
-                            createClassroom(classroom);
-                            $scope.cancel();
+                            createClassroom(classroom, function (data) {
+                                $scope.showMessage = true;
+                                $scope.message = data.message;
+                                $timeout(function () {
+                                    $scope.showMessage = false;
+                                    $scope.cancel();
+                                }, 1500);
+                            }, function (data) {
+                                console.log(data);
+                            });
                         };
 
                         $scope.createItem = function (item) {
-                            createItem(item);
-                            $scope.cancel();
+                            createItem(item, function (data) {
+                                console.log(data)
+                                $scope.showMessage = true;
+                                $scope.message = data.message;
+                                $timeout(function () {
+                                    $scope.showMessage = false;
+                                    $scope.cancel();
+                                }, 1500);
+                            }, function (data) {
+                                console.log(data);
+                            });
                         };
 
                         $scope.createTopic = function (topic) {
-                            createTopic(topic);
-                            $scope.cancel();
+                            createTopic(topic, function (data) {
+                                $scope.showMessage = true;
+                                $scope.message = data.message;
+                                $timeout(function () {
+                                    $scope.showMessage = false;
+                                    $scope.cancel();
+                                }, 1500);
+                            }, function (data) {
+                                console.log(data);
+                            });
                         };
                     },
                     resolve: {
-                        Form: function () {
-                            return vm.Form;
-                        },
                         classrooms: function () {
                             return vm.classrooms;
                         },
@@ -61,7 +85,7 @@ angular.module("AdministratorMdl", [])
                             return vm.createTopic;
                         }
                     },
-                    size: "lg",
+                    size: size,
                     templateUrl: view
                 });
             };
@@ -69,6 +93,7 @@ angular.module("AdministratorMdl", [])
             var vm = this;
 
             vm.Form = Form;
+            vm.User = User;
 
             vm.classrooms = [];
 
@@ -88,17 +113,20 @@ angular.module("AdministratorMdl", [])
 
             vm.getClassrooms();
 
-            vm.createClassroom = function (classroom) {
+            vm.createClassroom = function (classroom, successCallback, errorCallback) {
                 $http.post("/DigiDay/php/router.php/administrator/create/classroom", {classroom: classroom})
                         .success(function (data, status, headers, config) {
                             if (data.error) {
                                 console.log(data);
+                                errorCallback(data);
                             } else {
                                 vm.classrooms.push(classroom);
+                                successCallback(data);
                             }
                         })
                         .error(function (data, status, headers, config) {
                             console.log(data);
+                            errorCallback(data);
                         });
             };
 
@@ -166,17 +194,20 @@ angular.module("AdministratorMdl", [])
 
             vm.getItems();
 
-            vm.createItem = function (item) {
+            vm.createItem = function (item, successCallback, errorCallback) {
                 $http.post("/DigiDay/php/router.php/administrator/create/item", {item: item})
                         .success(function (data, status, headers, config) {
                             if (data.error) {
                                 console.log(data);
+                                errorCallback(data);
                             } else {
                                 vm.items.push(item);
+                                successCallback(data);
                             }
                         })
                         .error(function (data, status, headers, config) {
                             console.log(data);
+                            errorCallback(data);
                         });
             };
 
@@ -242,18 +273,20 @@ angular.module("AdministratorMdl", [])
 
             vm.getTopics();
 
-            vm.createTopic = function (topic) {
-                console.log(topic);
+            vm.createTopic = function (topic, successCallback, errorCallback) {
                 $http.post("/DigiDay/php/router.php/administrator/create/topic", {topic: topic})
                         .success(function (data, status, headers, config) {
                             if (data.error) {
                                 console.log(data);
+                                errorCallback(data);
                             } else {
                                 vm.topics.push(topic);
+                                successCallback(data);
                             }
                         })
                         .error(function (data, status, headers, config) {
                             console.log(data);
+                            errorCallback(data);
                         });
             };
 

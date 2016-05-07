@@ -1,10 +1,10 @@
-<div>
+<div ng-controller="UserCtrl as user">
     <div class="row">
         <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1">
             <br class="visible-sm visible-xs"/>
             <div class="row">
                 <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
-                    <img class="img-responsive center-block" src="{{user.user.image}}" ng-click="open('views/user/update/image.html')">
+                    <img class="img-responsive center-block" src="{{user.User.getUser().image}}" ng-click="open('views/user/update/image.html')">
                     <br/>
                 </div>
             </div>
@@ -15,31 +15,31 @@
             <div class="jumbotron">
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        <label style="font-size: 30px;">{{user.user.firstName}} {{user.user.lastName}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-remove" style="color: red; font-size: 30px;" ng-click="open('views/user/delete.html')"></span>
+                        <label style="font-size: 30px;">{{user.User.getUser().firstName}} {{user.User.getUser().lastName}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-remove" style="color: red; font-size: 30px;" ng-click="open('views/user/delete.html')"></span>
                     </div>
                 </div>
                 <br/><br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Email: <label>{{user.user.email}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-wrench" ng-click="open('views/user/update/email.html')"></span>
+                        Email: <label>{{user.User.getUser().email}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-circle" ng-click="open('views/user/update/email.html')"><span class="fa fa-wrench"></span></button>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Data di Nascita: <label><span ng-bind="stringToDate(user.user.birthdate) | date:'dd / MM / yyyy'"></span></label>
+                        Data di Nascita: <label><span ng-bind="stringToDate(user.User.getUser().birthdate) | date:'dd / MM / yyyy'"></span></label>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Ruolo: <label>{{user.user.role}}</label>
+                        Ruolo: <label>{{user.User.getUser().role}}</label>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-xs-10 col-xs-offset-1">
-                        Sesso: <label>{{user.user.sex}}</label>
+                        Sesso: <label>{{user.User.getUser().sex}}</label>
                     </div>
                 </div>
                 <br/>
@@ -57,41 +57,4 @@
             </div>
         </div>
     </div>
-    <!--
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
-            <div class="jumbotron">
-                <div class="row" style="font-size: 30px;">
-                    <div class="col-xs-12 text-center">
-                        <label>Alcune mie Sessioni</label>
-                    </div>
-                </div>
-                <br/>
-                <div class="well" ng-repeat="session in userProfile.sessions | limitTo: 5">
-                    <div class="row">
-                        <div class="col-xs-10 col-xs-offset-1">
-                            <label><a href="#/session/{{session.id}}" style="font-size: 20px">{{session.title}}</a></label>
-                        </div>
-                    </div>
-                    <br/>
-                    <div class="row">
-                        <div class="col-xs-10 col-xs-offset-1">{{session.details| limitTo: 500}} ...</div>
-                    </div>
-                    <br/>
-                    <div class="row">
-                        <div class="col-xs-10 col-xs-offset-1">
-                            <label><span ng-bind="userProfile.stringToDate(session.startingDate) | date:'dd / MM / yyyy HH:mm'"></span></label> - <label><span ng-bind="userProfile.stringToDate(session.endingDate) | date:'HH:mm'"></span></label>
-                        </div>
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12 text-center">
-                        <label><a href="#/utente/sessioni" style="font-size: 18px;">Visualizza tutte le mie Sessioni</a></label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
 </div>
