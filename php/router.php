@@ -496,7 +496,9 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
             foreach ($array as &$session) {
                 if ($session["id"] == $row["sessionId"]) {
                     $added = true;
-                    $session["partecipants"][] = $row["partecipantId"];
+                    if (!is_null($row["partecipantId"])) {
+                        $session["partecipants"][] = $row["partecipantId"];
+                    }
                 }
             }
             if (!$added) {
@@ -529,7 +531,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                             ),
                             "partecipants" => array()
                         );
-                        if (isset($row["partecipantId"])) {
+                        if (!is_null($row["partecipantId"])) {
                             $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
                         }
                     } else {
@@ -559,7 +561,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                             ),
                             "partecipants" => array()
                         );
-                        if (isset($row["partecipantId"])) {
+                        if (!is_null($row["partecipantId"])) {
                             $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
                         }
                     }
@@ -590,7 +592,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                         ),
                         "partecipants" => array()
                     );
-                    if (isset($row["partecipantId"])) {
+                    if (!is_null($row["partecipantId"])) {
                         $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
                     }
                 }

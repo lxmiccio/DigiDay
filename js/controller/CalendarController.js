@@ -13,9 +13,12 @@ angular.module("CalendarMdl", [])
                         },
                         events: function () {
                             return vm.events;
+                        },
+                        deleteSession: function () {
+                            return vm.deleteSession;
                         }
                     },
-                    controller: function ($http, $window, $scope, $uibModalInstance, User, event, events) {
+                    controller: function ($http, $window, $scope, $uibModalInstance, User, event, events, deleteSession) {
 
                         $scope.ok = function () {
                             $uibModalInstance.close();
@@ -120,29 +123,8 @@ angular.module("CalendarMdl", [])
                         $scope.events = events;
 
                         $scope.deleteSession = function () {
-                            $http.post("/DigiDay/php/router.php/delete/session", {sessionId: event.id})
-                                    .success(function (data, status, headers, config) {
-                                        if (data.error) {
-                                            console.log(data);
-                                        } else {
-                                            console.log(data);
-                                            var array = angular.copy($scope.events);
-                                            $scope.events = [];
-                                            if (angular.isArray(array)) {
-                                                array.forEach(function (entry) {
-                                                    if (entry != null) {
-                                                        if (entry.id.toUpperCase().toString() !== event.id) {
-                                                            $scope.events.push(entry);
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                        $window.location.reload();
-                                    })
-                                    .error(function (data, status, headers, config) {
-                                        console.log(data);
-                                    });
+                            deleteSession($scope.event.id);
+                            $scope.cancel();
                         };
 
                         $scope.isSubscribed = function () {
@@ -223,6 +205,32 @@ angular.module("CalendarMdl", [])
             var vm = this;
 
             vm.events = [];
+
+            vm.deleteSession = function (sessionId) {
+                $http.post("/DigiDay/php/router.php/delete/session", {sessionId: sessionId})
+                        .success(function (data, status, headers, config) {
+                            if (data.error) {
+                                console.log(data);
+                            } else {
+                                console.log(data);
+                                var array = angular.copy(vm.events);
+                                vm.events = [];
+                                if (angular.isArray(array)) {
+                                    array.forEach(function (entry) {
+                                        if (entry != null) {
+                                            if (entry.id.toUpperCase().toString() !== sessionId.toUpperCase().toString()) {
+                                                vm.events.push(entry);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            //$window.location.reload();
+                        })
+                        .error(function (data, status, headers, config) {
+                            console.log(data);
+                        });
+            }
 
             vm.getSessions = function () {
                 $http.get("/DigiDay/php/router.php/sessions/calendar")
