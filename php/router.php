@@ -331,6 +331,41 @@ $router->post("DigiDay/php/router.php/administrator/delete/topic", function() {
     }
 });
 
+
+/**
+ * Deletes a session
+ * TO DO Spedire una Email agli iscritti
+ */
+$router->post("DigiDay/php/router.php/delete/session", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $id = filter_var($json->sessionId, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("DELETE FROM Sessione WHERE IdSessione = '" . $id . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Sessione eliminato con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile eliminare la Sessione"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
 /**
  * Subscribes an user
  */
@@ -396,6 +431,7 @@ $router->post("DigiDay/php/router.php/session/unsubscribe", function() {
         $mysql = null;
     }
 });
+
 
 
 /**
@@ -494,7 +530,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                             "partecipants" => array()
                         );
                         if (isset($row["partecipantId"])) {
-                            $array["partecipants"][] = $row["partecipantId"];
+                            $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
                         }
                     } else {
                         $array[] = array(
@@ -524,7 +560,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                             "partecipants" => array()
                         );
                         if (isset($row["partecipantId"])) {
-                            $array["partecipants"][] = $row["partecipantId"];
+                            $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
                         }
                     }
                 } else {
@@ -555,7 +591,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                         "partecipants" => array()
                     );
                     if (isset($row["partecipantId"])) {
-                        $array["partecipants"][] = $row["partecipantId"];
+                        $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
                     }
                 }
             }

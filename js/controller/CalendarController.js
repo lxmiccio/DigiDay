@@ -10,9 +10,12 @@ angular.module("CalendarMdl", [])
                     resolve: {
                         event: function () {
                             return event;
+                        },
+                        events: function () {
+                            return vm.events;
                         }
                     },
-                    controller: function ($http, $location, $scope, $uibModalInstance, User, event) {
+                    controller: function ($http, $window, $scope, $uibModalInstance, User, event, events) {
 
                         $scope.ok = function () {
                             $uibModalInstance.close();
@@ -22,25 +25,151 @@ angular.module("CalendarMdl", [])
                             $uibModalInstance.dismiss("cancel");
                         };
 
+                        $scope.open = function (view) {
+                            var modalInstance = $uibModal.open({
+                                animation: true,
+                                controller: function ($http, $location, $scope, $timeout, $uibModalInstance, Form, User, Utility) {
+
+                                    $scope.ok = function () {
+                                        $uibModalInstance.close();
+                                    };
+
+                                    $scope.cancel = function () {
+                                        $uibModalInstance.dismiss("cancel");
+                                    };
+
+                                    $scope.Form = Form;
+                                    $scope.User = User;
+                                    $scope.Utility = Utility;
+
+                                    $scope.showErrorMessage = false;
+                                    $scope.showSuccessMessage = false;
+
+                                    $scope.login = function (user) {
+                                        $scope.User.login(user, function () {
+                                            $scope.showSuccessMessage = true;
+                                            $scope.message = "Autenticazione riuscita!";
+                                            $timeout(function () {
+                                                $scope.showSuccessMessage = false;
+                                                $scope.cancel();
+                                            }, 1000);
+                                        }, function () {
+                                            $scope.showErrorMessage = true;
+                                            $scope.message = "Autenticazione fallita!";
+                                            $scope.submessage = "Matricola e Password non corrispondono";
+                                            $timeout(function () {
+                                                $scope.showErrorMessage = false;
+                                            }, 3000);
+                                        });
+                                    };
+
+                                    $scope.create = function (user) {
+                                        $scope.User.create(user, function () {
+                                            $scope.showSuccessMessage = true;
+                                            $scope.message = "Utente creato con successo!";
+                                            $timeout(function () {
+                                                $scope.showSuccessMessage = false;
+                                                $scope.cancel();
+                                            }, 1000);
+                                        }, function () {
+                                            $scope.showErrorMessage = true;
+                                            $scope.message = "Impossibile creare l'Utente!";
+                                            $timeout(function () {
+                                                $scope.showErrorMessage = false;
+                                            }, 3000);
+                                        });
+                                    };
+
+                                    $scope.freshers = [];
+
+                                    $scope.emails = [];
+
+                                    $http.get("/DigiDay/php/router.php/freshers")
+                                            .success(function (data, status, headers, config) {
+                                                if (Array.isArray(data.freshers)) {
+                                                    data.freshers.forEach(function (entry) {
+                                                        $scope.freshers.push(entry);
+                                                    });
+                                                }
+                                            })
+                                            .error(function (data, status, headers, config) {
+                                                console.log(data);
+                                            });
+
+                                    $http.get("/DigiDay/php/router.php/emails")
+                                            .success(function (data, status, headers, config) {
+                                                if (Array.isArray(data.emails)) {
+                                                    data.emails.forEach(function (entry) {
+                                                        $scope.emails.push(entry);
+                                                    });
+                                                }
+                                            })
+                                            .error(function (data, status, headers, config) {
+                                                console.log(data);
+                                            });
+                                },
+                                size: "md",
+                                templateUrl: view
+                            });
+                        };
+
                         $scope.User = User;
 
-                        $scope.user = User.getUser();
-
                         $scope.event = event;
+
+                        $scope.events = events;
+
+                        $scope.deleteSession = function () {
+                            $http.post("/DigiDay/php/router.php/delete/session", {sessionId: event.id})
+                                    .success(function (data, status, headers, config) {
+                                        if (data.error) {
+                                            console.log(data);
+                                        } else {
+                                            console.log(data);
+                                            var array = angular.copy($scope.events);
+                                            $scope.events = [];
+                                            if (angular.isArray(array)) {
+                                                array.forEach(function (entry) {
+                                                    if (entry != null) {
+                                                        if (entry.id.toUpperCase().toString() !== event.id) {
+                                                            $scope.events.push(entry);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        $window.location.reload();
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
 
                         $scope.isSubscribed = function () {
                             var boolean = false;
                             if (angular.isArray($scope.event.partecipants)) {
                                 $scope.event.partecipants.forEach(function (entry) {
                                     if (entry != null) {
-                                        if (entry.toUpperCase().toString() === $scope.user.fresher.toUpperCase().toString()) {
-                                            boolean = true;
+                                        if ($scope.User.getUser() != null) {
+                                            if (entry.toUpperCase().toString() === $scope.User.getUser().fresher.toUpperCase().toString()) {
+                                                boolean = true;
+                                            }
                                         }
                                     }
                                 });
                             }
                             return boolean;
-                        }
+                        };
+
+                        $scope.isOwner = function () {
+                            var boolean = false;
+                            if ($scope.User.getUser() != null) {
+                                if ($scope.event.creator.id.toUpperCase().toString() === $scope.User.getUser().fresher.toUpperCase().toString()) {
+                                    boolean = true;
+                                }
+                            }
+                            return boolean;
+                        };
 
                         $scope.subscribe = function () {
                             $http.post("/DigiDay/php/router.php/session/subscribe", {sessionId: event.id})
@@ -49,7 +178,7 @@ angular.module("CalendarMdl", [])
                                             console.log(data);
                                         } else {
                                             console.log(data);
-                                            $scope.event.partecipants.push($scope.user.fresher);
+                                            $scope.event.partecipants.push($scope.User.getUser().fresher);
                                         }
                                     })
                                     .error(function (data, status, headers, config) {
@@ -69,7 +198,7 @@ angular.module("CalendarMdl", [])
                                             if (angular.isArray(array)) {
                                                 array.forEach(function (entry) {
                                                     if (entry != null) {
-                                                        if (entry.toUpperCase().toString() !== $scope.user.fresher) {
+                                                        if (entry.toUpperCase().toString() !== $scope.User.getUser().fresher) {
                                                             $scope.event.partecipants.push(entry);
                                                         }
                                                     }
@@ -98,6 +227,7 @@ angular.module("CalendarMdl", [])
             vm.getSessions = function () {
                 $http.get("/DigiDay/php/router.php/sessions/calendar")
                         .success(function (data, status, headers, config) {
+                            console.log(data)
                             if (Array.isArray(data.sessions)) {
                                 data.sessions.forEach(function (entry) {
                                     entry.startsAt = new Date(entry.startsAt);

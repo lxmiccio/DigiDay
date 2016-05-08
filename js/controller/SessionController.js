@@ -10,7 +10,7 @@ angular.module("SessionMdl", [])
             $scope.openSession = function (view) {
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    controller: function ($http, $scope, $timeout, $uibModalInstance, Form, User, classrooms, items, topics) {
+                    controller: function ($http, $scope, $timeout, $uibModalInstance, $window, Form, User, classrooms, items, topics) {
 
                         $scope.ok = function () {
                             $uibModalInstance.close();
