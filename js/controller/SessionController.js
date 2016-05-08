@@ -1,10 +1,46 @@
 angular.module("SessionMdl", [])
 
-        .controller("SessionCtrl", function ($http, Form) {
+        .controller("SessionCtrl", function ($http, $scope, $uibModal, Form, User) {
 
             var vm = this;
 
             vm.Form = Form;
+            vm.User = User;
+
+            $scope.openSession = function (view) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    controller: function ($http, $scope, $timeout, $uibModalInstance, Form, User, classrooms, items, topics) {
+
+                        $scope.ok = function () {
+                            $uibModalInstance.close();
+                        };
+
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss("cancel");
+                        };
+
+                        $scope.Form = Form;
+                        $scope.User = User;
+                    },
+                    resolve: {
+                        classrooms: function () {
+                            return vm.classrooms;
+                        },
+                        items: function () {
+                            return vm.items;
+                        },
+                        topics: function () {
+                            return vm.topics;
+                        },
+                        create: function () {
+                            return vm.create();
+                        }
+                    },
+                    size: "lg",
+                    templateUrl: view
+                });
+            };
 
             vm.classrooms = [];
 
@@ -60,7 +96,7 @@ angular.module("SessionMdl", [])
 
             vm.getTopics();
 
-            vm.createSession = function (session) {
+            vm.create = function (session) {
                 console.log(session);
                 $http.post("/DigiDay/php/router.php/session/create", {session: session})
                         .success(function (data, status, headers, config) {

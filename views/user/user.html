@@ -1,58 +1,56 @@
-<div ng-controller="UserCtrl as user">
-    <div class="row">
-        <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1">
-            <br class="visible-sm visible-xs"/>
+<div class="row">
+    <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1">
+        <br class="visible-sm visible-xs"/>
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
+                <img class="img-responsive center-block" src="{{user.User.getUser().image}}" ng-click="open('views/user/update/image.html')">
+                <br/>
+            </div>
+        </div>
+        <br class="visible-sm visible-xs"/>
+        <br class="visible-sm visible-xs"/>
+    </div>
+    <div class="col-md-6 col-md-offset-1 col-xs-10 col-xs-offset-1">
+        <div class="jumbotron">
             <div class="row">
-                <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-12">
-                    <img class="img-responsive center-block" src="{{user.User.getUser().image}}" ng-click="open('views/user/update/image.html')">
-                    <br/>
+                <div class="col-xs-10 col-xs-offset-1">
+                    <label style="font-size: 30px;">{{home.User.getUser().firstName}} {{home.User.getUser().lastName}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-remove" style="color: red; font-size: 30px;" ng-click="open('views/user/delete.html')"></span>
                 </div>
             </div>
-            <br class="visible-sm visible-xs"/>
-            <br class="visible-sm visible-xs"/>
-        </div>
-        <div class="col-md-6 col-md-offset-1 col-xs-10 col-xs-offset-1">
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        <label style="font-size: 30px;">{{user.User.getUser().firstName}} {{user.User.getUser().lastName}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-remove" style="color: red; font-size: 30px;" ng-click="open('views/user/delete.html')"></span>
-                    </div>
+            <br/><br/>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    Email: <label>{{home.User.getUser().email}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-circle" ng-click="open('views/user/update/email.html')"><span class="fa fa-wrench"></span></button>
                 </div>
-                <br/><br/>
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        Email: <label>{{user.User.getUser().email}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-circle" ng-click="open('views/user/update/email.html')"><span class="fa fa-wrench"></span></button>
-                    </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    Data di Nascita: <label><span ng-bind="home.Utility.stringToDate(home.User.getUser().birthdate) | date:'dd / MM / yyyy'"></span></label>
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        Data di Nascita: <label><span ng-bind="stringToDate(user.User.getUser().birthdate) | date:'dd / MM / yyyy'"></span></label>
-                    </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    Ruolo: <label>{{home.User.getUser().role}}</label>
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        Ruolo: <label>{{user.User.getUser().role}}</label>
-                    </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    Sesso: <label>{{home.User.getUser().sex}}</label>
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        Sesso: <label>{{user.User.getUser().sex}}</label>
-                    </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <a ng-click="open('views/user/update/image.html')">Modifica Immagine</a>
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        <a ng-click="open('views/user/update/image.html')">Modifica Immagine</a>
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1">
-                        <a ng-click="open('views/user/update/password.html')">Modifica Password</a>
-                    </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <a ng-click="open('views/user/update/password.html')">Modifica Password</a>
                 </div>
             </div>
         </div>

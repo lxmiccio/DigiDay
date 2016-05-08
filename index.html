@@ -38,8 +38,6 @@
         <script src="js/controller/AdministratorController.js"></script>
         <script src="js/controller/CalendarController.js"></script>
         <script src="js/controller/SessionController.js"></script>
-        <script src="js/controller/TakePartController.js"></script>
-        <script src="js/controller/UserController.js"></script>
         <script src="js/digiday/DigiDay.js"></script>
         <style type="text/css">
             .error {
@@ -94,7 +92,7 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#/sessione/crea"><i class="fa fa-book fa-fw"></i> Crea sessione</a></li>
+                            <li><a ng-click="openSession('views/session/session.html')"><i class="fa fa-book fa-fw"></i> Crea sessione</a></li>
                         </ul>
                     </li>
                     <li class="dropdown pull-right">

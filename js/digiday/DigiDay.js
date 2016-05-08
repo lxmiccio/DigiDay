@@ -1,4 +1,4 @@
-angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select", "ui.bootstrap", "AdministratorMdl", "CalendarMdl", "SessionMdl", "TakePartMdl", "UserMdl"])
+angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select", "ui.bootstrap", "AdministratorMdl", "CalendarMdl", "SessionMdl"])
 
         .config(["$routeProvider", function ($routeProvider) {
 
@@ -28,14 +28,17 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
                 });
             }])
 
-        .controller("HomeCtrl", function ($scope, $uibModal, User) {
+        .controller("HomeCtrl", function ($scope, $uibModal, User, Utility) {
 
             var vm = this;
+
             vm.User = User;
+            vm.Utility = Utility;
+
             $scope.open = function (view) {
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    controller: function ($http, $location, $scope, $timeout, $uibModalInstance, Form, User) {
+                    controller: function ($http, $location, $scope, $timeout, $uibModalInstance, Form, User, Utility) {
 
                         $scope.ok = function () {
                             $uibModalInstance.close();
@@ -47,6 +50,7 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
 
                         $scope.Form = Form;
                         $scope.User = User;
+                        $scope.Utility = Utility;
 
                         $scope.showErrorMessage = false;
                         $scope.showSuccessMessage = false;
@@ -186,6 +190,96 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
                                 });
                     },
                     size: "md",
+                    templateUrl: view
+                });
+            };
+
+            $scope.openSession = function (view) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    controller: function ($http, $scope, $timeout, $uibModalInstance, Form, User) {
+
+                        $scope.ok = function () {
+                            $uibModalInstance.close();
+                        };
+
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss("cancel");
+                        };
+
+                        $scope.Form = Form;
+                        $scope.User = User;
+
+                        $scope.classrooms = [];
+
+                        $scope.getClassrooms = function () {
+                            $http.get("/DigiDay/php/router.php/classrooms")
+                                    .success(function (data, status, headers, config) {
+                                        if (Array.isArray(data.classrooms)) {
+                                            data.classrooms.forEach(function (entry) {
+                                                $scope.classrooms.push(entry);
+                                            });
+                                        }
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
+
+                        $scope.getClassrooms();
+
+                        $scope.items = [];
+
+                        $scope.getItems = function () {
+                            $http.get("/DigiDay/php/router.php/items")
+                                    .success(function (data, status, headers, config) {
+                                        if (Array.isArray(data.items)) {
+                                            data.items.forEach(function (entry) {
+                                                $scope.items.push(entry);
+                                            });
+                                        }
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
+
+                        $scope.getItems();
+
+                        $scope.topics = [];
+
+                        $scope.getTopics = function () {
+                            $http.get("/DigiDay/php/router.php/topics")
+                                    .success(function (data, status, headers, config) {
+                                        if (Array.isArray(data.topics)) {
+                                            data.topics.forEach(function (entry) {
+                                                $scope.topics.push(entry);
+                                            });
+                                        }
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
+
+                        $scope.getTopics();
+
+                        $scope.create = function (session) {
+                            console.log(session);
+                            $http.post("/DigiDay/php/router.php/session/create", {session: session})
+                                    .success(function (data, status, headers, config) {
+                                        if (data.error) {
+                                            console.log(data);
+                                        } else {
+                                            console.log(data);
+                                        }
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
+                    },
+                    size: "lg",
                     templateUrl: view
                 });
             };
@@ -377,8 +471,18 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
                                     console.log(data);
                                     errorCallback();
                                 } else {
-                                    user = null;
                                     successCallback();
+                                    $http.get("/DigiDay/php/router.php/user/logout")
+                                            .success(function (data, status, headers, config) {
+                                                if (data.error) {
+                                                    console.log(data);
+                                                } else {
+                                                    user = null;
+                                                }
+                                            })
+                                            .error(function (data, status, headers, config) {
+                                                console.log(data);
+                                            });
                                 }
                             })
                             .error(function (data, status, headers, config) {
@@ -432,6 +536,16 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
                                 console.log(data);
                                 errorCallback();
                             });
+                }
+            };
+        })
+
+        .factory("Utility", function () {
+            return {
+                stringToDate: function (string) {
+                    var date = new Date(string);
+                    date.setDate(date.getDate());
+                    return date;
                 }
             };
         });

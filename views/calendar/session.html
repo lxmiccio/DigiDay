@@ -2,34 +2,30 @@
     <div class="col-xs-10 col-sm-offset-1">
         <div class="text-center"><h2>{{event.title}}</h2></div>
         <br/>
-        <br/>
-    </div>
-    <div class="col-xs-10 col-sm-offset-1" ng-hide="event.details">
-        <div class="well well-lg">Dettagli non disponibili</div>
-        <br/>
-    </div>
-    <div class="col-xs-10 col-sm-offset-1" ng-show="event.details">
-        <div class="well well-lg">{{event.details}}</div>
-        <br/>
     </div>
     <div class="col-xs-10 col-sm-offset-1">
-        <div class="pull-right"><h4>{{event.creator.firstName}} {{event.creator.lastName}}</h4></div>
+        <div class="text-center">{{event.details}}</div>
         <br/>
         <br/>
     </div>
-    <div class="col-xs-10 col-sm-offset-1">
-        <div class="pull-right">{{event.partecip}} / {{event.partecipants}}</div>
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="well well-lg">
+            <div>L'evento è stato creato da <label>{{event.creator.firstName}} {{event.creator.lastName}}</label> e si terrà in aula <label>{{event.classroom.name}}</label> il giorno <label>{{stringToDate(event.startingDate) | date: "dd/MM/yyyy"}}</label> dalle <label>{{stringToDate(event.startingDate) | date: "HH:mm"}}</label> alle <label>{{stringToDate(event.endingDate) | date: "HH:mm"}}</label>.</div>
+            <br/>
+            <div ng-show="event.partecipants.length === 1">Attualmente partecipa <label>1 utente</label> su <label>{{event.maxPartecipants}}</label></div>
+            <div ng-show="event.partecipants.length !== 1">Attualmente partecipano <label>{{event.partecipants.length}} utenti</label> su <label>{{event.maxPartecipants}}</label></div>
+        </div>
         <br/>
         <br/>
     </div>
-    <div class="col-xs-10 col-sm-offset-1">
-        <div class="pull-right">{{stringToDate(event.startingDate) | date:"dd/MM/yyyy HH:mm"}} - {{stringToDate(event.startingDate) | date:"HH:mm"}}</div>
-        <br/>
-        <br/>
+    <div class="row" ng-hide="isSubscribed()">
+        <div class="col-xs-8 col-xs-offset-2">
+            <button class="btn btn-block btn-success" ng-click="subscribe()" ng-disabled="event.partecipants.length === event.maxPartecipants">Iscriviti</button>
+        </div>
     </div>
-    <div class="col-xs-10 col-sm-offset-1" ng-hide="user.isAuthenticated()">
-        <div class="alert alert-danger">
-            <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+    <div class="row" ng-show="isSubscribed()">
+        <div class="col-xs-8 col-xs-offset-2">
+            <button class="btn btn-block btn-danger" ng-click="unsubscribe()">Disiscriviti</button>
         </div>
     </div>
 </div>

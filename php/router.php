@@ -108,7 +108,7 @@ $router->post("DigiDay/php/router.php/administrator/create/topic", function() {
         if ($result->rowCount() > 0) {
             echo json_encode(array(
                 "error" => false,
-                    "message" => "Argomento aggiunto con successo"
+                "message" => "Argomento aggiunto con successo"
             ));
         } else {
             echo json_encode(array(
@@ -331,9 +331,71 @@ $router->post("DigiDay/php/router.php/administrator/delete/topic", function() {
     }
 });
 
+/**
+ * Subscribes an user
+ */
+$router->post("DigiDay/php/router.php/session/subscribe", function() {
+    require_once "connection.php";
 
+    $json = json_decode(file_get_contents('php://input'));
 
+    $sessionId = filter_var($json->sessionId, FILTER_SANITIZE_STRING);
 
+    try {
+        $result = $mysql->query("INSERT INTO Partecipa (MatricolaUtente, IdSessione) VALUES('" . $_SESSION["fresher"] . "', '" . $sessionId . "')");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Iscritto con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile iscriversi"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
+
+/**
+ * Unsubscribes an user
+ */
+$router->post("DigiDay/php/router.php/session/unsubscribe", function() {
+    require_once "connection.php";
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    $sessionId = filter_var($json->sessionId, FILTER_SANITIZE_STRING);
+
+    try {
+        $result = $mysql->query("DELETE FROM Partecipa WHERE MatricolaUtente = '" . $_SESSION["fresher"] . "' AND IdSessione = '" . $sessionId . "'");
+        if ($result->rowCount() > 0) {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Disiscritto con successo"
+            ));
+        } else {
+            echo json_encode(array(
+                "error" => false,
+                "message" => "Impossibile disiscriversi"
+            ));
+        }
+    } catch (PDOException $exception) {
+        echo json_encode(array(
+            "error" => true,
+            "message" => $exception->getMessage()
+        ));
+    } finally {
+        $mysql = null;
+    }
+});
 
 
 /**
@@ -393,35 +455,78 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT COUNT(*)-1 AS partecip, Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS partecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Nome AS creatorFirstName, Cognome AS creatorLastName, IdAula AS classId, IdArgomento AS topicId, Richiede.IdMateriale AS itemId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione LEFT JOIN Partecipa ON Sessione.IdSessione = Partecipa.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola GROUP BY (Sessione.IdSessione)") as $row) {
-            if (isset($_SESSION["fresher"])) {
-                if (!strcmp($row["creatorFresher"], $_SESSION["fresher"])) {
-                    $array[] = array(
-                        "id" => $row["sessionId"],
-                        "type" => "important",
-                        "title" => $row["title"],
-                        "startingDate" => $row["startingDate"],
-                        "endingDate" => $row["endingDate"],
-                        "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                        "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
-                        "partecip" => $row["partecip"],
-                        "partecipants" => $row["partecipants"],
-                        "details" => $row["details"],
-                        "creator" => array(
-                            "id" => $row["creatorFresher"],
-                            "firstName" => $row["creatorFirstName"],
-                            "lastName" => $row["creatorLastName"]
-                        ),
-                        "class" => array(
-                            "id" => $row["classId"]
-                        ),
-                        "topic" => array(
-                            "id" => $row["topicId"]
-                        ),
-                        "material" => array(
-                            "id" => $row["itemId"]
-                        )
-                    );
+        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxPartecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Utente.Nome AS creatorFirstName, Cognome AS creatorLastName, Aula.IdAula AS classId, Aula.Nome AS className, IdArgomento AS topicId, Richiede.IdMateriale AS itemId, Partecipa.MatricolaUtente AS partecipantId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione LEFT JOIN Partecipa ON Sessione.IdSessione = Partecipa.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola INNER JOIN Aula ON Sessione.IdAula = Aula.IdAula") as $row) {
+            $added = false;
+            foreach ($array as &$session) {
+                if ($session["id"] == $row["sessionId"]) {
+                    $added = true;
+                    $session["partecipants"][] = $row["partecipantId"];
+                }
+            }
+            if (!$added) {
+                if (isset($_SESSION["fresher"])) {
+                    if (!strcmp($row["creatorFresher"], $_SESSION["fresher"])) {
+                        $array[] = array(
+                            "id" => $row["sessionId"],
+                            "type" => "important",
+                            "title" => $row["title"],
+                            "startingDate" => $row["startingDate"],
+                            "endingDate" => $row["endingDate"],
+                            "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                            "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
+                            "maxPartecipants" => $row["maxPartecipants"],
+                            "details" => $row["details"],
+                            "creator" => array(
+                                "id" => $row["creatorFresher"],
+                                "firstName" => $row["creatorFirstName"],
+                                "lastName" => $row["creatorLastName"]
+                            ),
+                            "classroom" => array(
+                                "id" => $row["classId"],
+                                "name" => $row["className"]
+                            ),
+                            "topic" => array(
+                                "id" => $row["topicId"]
+                            ),
+                            "material" => array(
+                                "id" => $row["itemId"]
+                            ),
+                            "partecipants" => array()
+                        );
+                        if (isset($row["partecipantId"])) {
+                            $array["partecipants"][] = $row["partecipantId"];
+                        }
+                    } else {
+                        $array[] = array(
+                            "id" => $row["sessionId"],
+                            "type" => "info",
+                            "title" => $row["title"],
+                            "startingDate" => $row["startingDate"],
+                            "endingDate" => $row["endingDate"],
+                            "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
+                            "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
+                            "maxPartecipants" => $row["maxPartecipants"],
+                            "details" => $row["details"],
+                            "creator" => array(
+                                "id" => $row["creatorFresher"],
+                                "firstName" => $row["creatorFirstName"],
+                                "lastName" => $row["creatorLastName"]
+                            ),
+                            "class" => array(
+                                "id" => $row["classId"]
+                            ),
+                            "topic" => array(
+                                "id" => $row["topicId"]
+                            ),
+                            "material" => array(
+                                "id" => $row["itemId"]
+                            ),
+                            "partecipants" => array()
+                        );
+                        if (isset($row["partecipantId"])) {
+                            $array["partecipants"][] = $row["partecipantId"];
+                        }
+                    }
                 } else {
                     $array[] = array(
                         "id" => $row["sessionId"],
@@ -431,8 +536,7 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                         "endingDate" => $row["endingDate"],
                         "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
                         "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
-                        "partecip" => $row["partecip"],
-                        "partecipants" => $row["partecipants"],
+                        "maxPartecipants" => $row["maxPartecipants"],
                         "details" => $row["details"],
                         "creator" => array(
                             "id" => $row["creatorFresher"],
@@ -447,36 +551,13 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                         ),
                         "material" => array(
                             "id" => $row["itemId"]
-                        )
+                        ),
+                        "partecipants" => array()
                     );
+                    if (isset($row["partecipantId"])) {
+                        $array["partecipants"][] = $row["partecipantId"];
+                    }
                 }
-            } else {
-                $array[] = array(
-                    "id" => $row["sessionId"],
-                    "type" => "info",
-                    "title" => $row["title"],
-                    "startingDate" => $row["startingDate"],
-                    "endingDate" => $row["endingDate"],
-                    "startsAt" => str_replace(" ", "T", $row["startingDate"]) . "Z",
-                    "endsAt" => str_replace(" ", "T", $row["endingDate"]) . "Z",
-                    "partecip" => $row["partecip"],
-                    "partecipants" => $row["partecipants"],
-                    "details" => $row["details"],
-                    "creator" => array(
-                        "id" => $row["creatorFresher"],
-                        "firstName" => $row["creatorFirstName"],
-                        "lastName" => $row["creatorLastName"]
-                    ),
-                    "class" => array(
-                        "id" => $row["classId"]
-                    ),
-                    "topic" => array(
-                        "id" => $row["topicId"]
-                    ),
-                    "material" => array(
-                        "id" => $row["itemId"]
-                    )
-                );
             }
         }
         echo json_encode(array(

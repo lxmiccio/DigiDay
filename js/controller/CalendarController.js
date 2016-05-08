@@ -12,7 +12,7 @@ angular.module("CalendarMdl", [])
                             return event;
                         }
                     },
-                    controller: function ($http, $location, $scope, $uibModalInstance, event) {
+                    controller: function ($http, $location, $scope, $uibModalInstance, User, event) {
 
                         $scope.ok = function () {
                             $uibModalInstance.close();
@@ -22,7 +22,65 @@ angular.module("CalendarMdl", [])
                             $uibModalInstance.dismiss("cancel");
                         };
 
+                        $scope.User = User;
+
+                        $scope.user = User.getUser();
+
                         $scope.event = event;
+
+                        $scope.isSubscribed = function () {
+                            var boolean = false;
+                            if (angular.isArray($scope.event.partecipants)) {
+                                $scope.event.partecipants.forEach(function (entry) {
+                                    if (entry != null) {
+                                        if (entry.toUpperCase().toString() === $scope.user.fresher.toUpperCase().toString()) {
+                                            boolean = true;
+                                        }
+                                    }
+                                });
+                            }
+                            return boolean;
+                        }
+
+                        $scope.subscribe = function () {
+                            $http.post("/DigiDay/php/router.php/session/subscribe", {sessionId: event.id})
+                                    .success(function (data, status, headers, config) {
+                                        if (data.error) {
+                                            console.log(data);
+                                        } else {
+                                            console.log(data);
+                                            $scope.event.partecipants.push($scope.user.fresher);
+                                        }
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
+
+                        $scope.unsubscribe = function () {
+                            $http.post("/DigiDay/php/router.php/session/unsubscribe", {sessionId: event.id})
+                                    .success(function (data, status, headers, config) {
+                                        if (data.error) {
+                                            console.log(data);
+                                        } else {
+                                            console.log(data);
+                                            var array = angular.copy($scope.event.partecipants);
+                                            $scope.event.partecipants = [];
+                                            if (angular.isArray(array)) {
+                                                array.forEach(function (entry) {
+                                                    if (entry != null) {
+                                                        if (entry.toUpperCase().toString() !== $scope.user.fresher) {
+                                                            $scope.event.partecipants.push(entry);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    })
+                                    .error(function (data, status, headers, config) {
+                                        console.log(data);
+                                    });
+                        };
 
                         $scope.stringToDate = function (stringDate) {
                             var date = new Date(stringDate);
