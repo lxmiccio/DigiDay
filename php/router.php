@@ -491,13 +491,24 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
 
     try {
         $array = array();
-        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxPartecipants, Dettagli AS details, MatricolaCreatore AS creatorFresher, Utente.Nome AS creatorFirstName, Cognome AS creatorLastName, Aula.IdAula AS classId, Aula.Nome AS className, IdArgomento AS topicId, Richiede.IdMateriale AS itemId, Partecipa.MatricolaUtente AS partecipantId FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione LEFT JOIN Partecipa ON Sessione.IdSessione = Partecipa.IdSessione INNER JOIN Utente ON Sessione.MatricolaCreatore = Utente.Matricola INNER JOIN Aula ON Sessione.IdAula = Aula.IdAula") as $row) {
+        foreach ($mysql->query("SELECT Sessione.IdSessione AS sessionId, Titolo AS title, DataInizio AS startingDate, DataFine AS endingDate, NumeroMassimo AS maxPartecipants, Dettagli AS details, "
+                . "Sessione.MatricolaCreatore AS creatorFresher, U.Nome AS creatorFirstName, U.Cognome AS creatorLastName, "
+                . "Aula.IdAula AS classId, Aula.Nome AS className, "
+                . "Argomento.IdArgomento AS topicId, Argomento.Ambito AS topicScope, "
+                . "Richiede.IdMateriale AS itemId, "
+                . "Partecipa.MatricolaUtente AS partecipantId, Utente.Nome AS partecipantFirstName, Utente.Cognome AS partecipantLastName, Utente.Foto AS partecipantImage "
+                . "FROM Sessione LEFT JOIN Richiede On Sessione.IdSessione = Richiede.IdSessione LEFT JOIN Partecipa ON Sessione.IdSessione = Partecipa.IdSessione LEFT JOIN Utente ON Partecipa.MatricolaUtente = Utente.Matricola INNER JOIN Utente AS U ON Sessione.MatricolaCreatore = U.Matricola INNER JOIN Aula ON Sessione.IdAula = Aula.IdAula INNER JOIN Argomento ON Sessione.IdArgomento = Argomento.IdArgomento") as $row) {
             $added = false;
             foreach ($array as &$session) {
                 if ($session["id"] == $row["sessionId"]) {
                     $added = true;
                     if (!is_null($row["partecipantId"])) {
-                        $session["partecipants"][] = $row["partecipantId"];
+                        $session["partecipants"][] = array(
+                            "id" => $row["partecipantId"],
+                            "firstName" => $row["partecipantFirstName"],
+                            "lastName" => $row["partecipantLastName"],
+                            "image" => $row["partecipantImage"]
+                        );
                     }
                 }
             }
@@ -532,7 +543,12 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                             "partecipants" => array()
                         );
                         if (!is_null($row["partecipantId"])) {
-                            $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
+                            $array[count($array) - 1]["partecipants"][] = array(
+                                "id" => $row["partecipantId"],
+                                "firstName" => $row["partecipantFirstName"],
+                                "lastName" => $row["partecipantLastName"],
+                                "image" => $row["partecipantImage"]
+                            );
                         }
                     } else {
                         $array[] = array(
@@ -562,7 +578,12 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                             "partecipants" => array()
                         );
                         if (!is_null($row["partecipantId"])) {
-                            $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
+                            $array[count($array) - 1]["partecipants"][] = array(
+                                "id" => $row["partecipantId"],
+                                "firstName" => $row["partecipantFirstName"],
+                                "lastName" => $row["partecipantLastName"],
+                                "image" => $row["partecipantImage"]
+                            );
                         }
                     }
                 } else {
@@ -593,7 +614,12 @@ $router->get("DigiDay/php/router.php/sessions/calendar", function() {
                         "partecipants" => array()
                     );
                     if (!is_null($row["partecipantId"])) {
-                        $array[count($array) - 1]["partecipants"][] = $row["partecipantId"];
+                        $array[count($array) - 1]["partecipants"][] = array(
+                            "id" => $row["partecipantId"],
+                            "firstName" => $row["partecipantFirstName"],
+                            "lastName" => $row["partecipantLastName"],
+                            "image" => $row["partecipantImage"]
+                        );
                     }
                 }
             }

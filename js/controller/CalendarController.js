@@ -1,6 +1,8 @@
 angular.module("CalendarMdl", [])
 
-        .controller("CalendarCtrl", function ($http, $scope, $uibModal) {
+        .controller("CalendarCtrl", function ($http, $scope, $uibModal, calendarConfig) {
+            console.log(calendarConfig)
+
 
             $scope.openSession = function (view, event) {
                 var modalInstance = $uibModal.open({
@@ -116,6 +118,40 @@ angular.module("CalendarMdl", [])
                             });
                         };
 
+
+
+
+
+                        $scope.openPartecipants = function (view) {
+                            var modalInstance = $uibModal.open({
+                                animation: true,
+                                controller: function ($scope, $uibModalInstance, event) {
+
+                                    $scope.ok = function () {
+                                        $uibModalInstance.close();
+                                    };
+
+                                    $scope.cancel = function () {
+                                        $uibModalInstance.dismiss("cancel");
+                                    };
+
+                                    $scope.event = event;
+                                },
+                                resolve: {
+                                    event: function () {
+                                        return event;
+                                    }
+                                },
+                                size: "md",
+                                templateUrl: view
+                            });
+                        };
+
+
+
+
+
+
                         $scope.User = User;
 
                         $scope.event = event;
@@ -133,8 +169,10 @@ angular.module("CalendarMdl", [])
                                 $scope.event.partecipants.forEach(function (entry) {
                                     if (entry != null) {
                                         if ($scope.User.getUser() != null) {
-                                            if (entry.toUpperCase().toString() === $scope.User.getUser().fresher.toUpperCase().toString()) {
-                                                boolean = true;
+                                            if (entry.id != null) {
+                                                if (entry.id.toUpperCase().toString() === $scope.User.getUser().fresher.toUpperCase().toString()) {
+                                                    boolean = true;
+                                                }
                                             }
                                         }
                                     }
@@ -160,7 +198,13 @@ angular.module("CalendarMdl", [])
                                             console.log(data);
                                         } else {
                                             console.log(data);
-                                            $scope.event.partecipants.push($scope.User.getUser().fresher);
+                                            var partecipant = {
+                                                id: $scope.User.getUser().fresher,
+                                                firstName: $scope.User.getUser().firstName,
+                                                lastName: $scope.User.getUser().lastName,
+                                                image: $scope.User.getUser().image
+                                            }
+                                            $scope.event.partecipants.push(partecipant);
                                         }
                                     })
                                     .error(function (data, status, headers, config) {
@@ -180,7 +224,7 @@ angular.module("CalendarMdl", [])
                                             if (angular.isArray(array)) {
                                                 array.forEach(function (entry) {
                                                     if (entry != null) {
-                                                        if (entry.toUpperCase().toString() !== $scope.User.getUser().fresher) {
+                                                        if (entry.id.toUpperCase().toString() != $scope.User.getUser().fresher.toUpperCase().toString()) {
                                                             $scope.event.partecipants.push(entry);
                                                         }
                                                     }
@@ -298,34 +342,5 @@ angular.module("CalendarMdl", [])
             vm.eventClicked = function (event) {
                 $scope.openSession("views/calendar/session.html", event);
                 console.log(event);
-            };
-
-            vm.eventEdited = function (event) {
-                $scope.openSession("views/calendar/session.html", event);
-                console.log(event);
-            };
-
-            vm.eventDeleted = function (event) {
-                $scope.openSession("views/calendar/session.html", event);
-                console.log(event);
-            };
-
-            vm.eventTimesChanged = function (event) {
-                $scope.openSession("views/calendar/session.html", event);
-                console.log(event);
-            };
-
-            vm.toggle = function ($event, field, event) {
-                $scope.openSession("views/calendar/session.html", event);
-                $event.preventDefault();
-                $event.stopPropagation();
-                event[field] = !event[field];
-            };
-        })
-
-        .filter("topic", function () {
-            return function (sessions, topic) {
-
-                return sessions;
             };
         });

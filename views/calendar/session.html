@@ -1,4 +1,16 @@
-<div class="row" ng-app="DigiDayMdl">
+<style>
+    .avatar {
+        background-image: url("http://www.w3schools.com/angular/pic_angular.jpg");
+        background-size: cover;
+        border: 2px solid #AAA;
+        border-radius: 100%;
+        height: 100px;
+        width: 100px;
+    }
+</style>
+<div class="row">
+    <div class="avatar center-block"></div>
+    <br/>
     <div class="col-xs-10 col-xs-offset-1">
         <div class="text-center"><h2>{{event.title}}</h2></div>
         <br/>
@@ -12,49 +24,82 @@
         <div class="well well-lg">
             <div>L'evento è stato creato da <label>{{event.creator.firstName}} {{event.creator.lastName}}</label> e si terrà in aula <label>{{event.classroom.name}}</label> il giorno <label>{{stringToDate(event.startingDate) | date: "dd/MM/yyyy"}}</label> dalle <label>{{stringToDate(event.startingDate) | date: "HH:mm"}}</label> alle <label>{{stringToDate(event.endingDate) | date: "HH:mm"}}</label>.</div>
             <br/>
-            <div ng-show="event.partecipants.length === 1">Attualmente partecipa <label>1 utente</label> su <label>{{event.maxPartecipants}}</label></div>
-            <div ng-show="event.partecipants.length !== 1">Attualmente partecipano <label>{{event.partecipants.length}} utenti</label> su <label>{{event.maxPartecipants}}</label></div>
+            <div ng-show="event.partecipants.length === 1">Attualmente partecipa <label>1 utente</label> su <label>{{event.maxPartecipants}}.</label></div>
+            <div ng-show="event.partecipants.length !== 1">Attualmente partecipano <label>{{event.partecipants.length}} utenti</label> su <label>{{event.maxPartecipants}}</label>.</div>
+            <br/>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-8 col-xs-4 col-xs-offset-8">
+                    <button class="btn btn-primary btn-block" ng-click="openPartecipants('views/calendar/partecipants.html')">Partecipanti</button>
+                </div>
+            </div>
         </div>
         <br/>
         <br/>
     </div>
+
     <div ng-show="User.isAuthenticated()">
-        <div ng-show="isOwner()">
-            <div class="row">
-                <div class="col-xs-8 col-xs-offset-2">
-                    <button class="btn btn-block btn-danger" ng-click="deleteSession()">Elimina</button>
-                </div>
+        <div class="row" ng-show="isOwner()">
+            <div class="col-xs-8 col-xs-offset-2">
+                <button class="btn btn-block btn-danger" ng-click="deleteSession()">Elimina</button>
             </div>
         </div>
+
         <div ng-hide="isOwner()">
-            <div class="row" ng-hide="isSubscribed()">
-                <div class="col-xs-8 col-xs-offset-2">
-                    <button class="btn btn-block btn-success" ng-click="subscribe()" ng-disabled="event.partecipants.length === event.maxPartecipants">Iscriviti</button>
-                </div>
-            </div>
             <div class="row" ng-show="isSubscribed()">
                 <div class="col-xs-8 col-xs-offset-2">
                     <button class="btn btn-block btn-danger" ng-click="unsubscribe()">Disiscriviti</button>
                 </div>
             </div>
+
+            <div class="row" ng-hide="isSubscribed()">
+                <div class="row" ng-show="event.partecipants.length == event.maxPartecipants">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="alert alert-danger">
+                            <div class="text-center"><strong>Impossibile iscriversi!</strong></div>
+                            <div class="text-center">Il numero massimo di partecipanti è già stato raggiunto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-hide="event.partecipants.length == event.maxPartecipants">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <button class="btn btn-block btn-success" ng-click="subscribe()" ng-disabled="event.partecipants.length === event.maxPartecipants">Iscriviti</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
     <div ng-hide="User.isAuthenticated()">
-        <div class="col-xs-8 col-xs-offset-2">
-            <div class="alert-group">
+        <div class="row" ng-show="event.partecipants.length == event.maxPartecipants">
+            <div class="col-xs-8 col-xs-offset-2">
                 <div class="alert alert-danger">
-                    <div class="text-center"><strong>Devi essere autenticato per iscriverti alla sessione</strong></div>
-                    <br/>
-                    <div class="row">
-                        <div class="col-xs-4 col-xs-offset-2">
-                            <button class="btn btn-block btn-success" ng-click="open('views/user/login.html')">Accedi</button>
-                        </div>
-                        <div class="col-xs-4">
-                            <button class="btn btn-block btn-primary" ng-click="open('views/user/create.html')">Iscriviti</button>
+                    <div class="text-center"><strong>Impossibile iscriversi!</strong></div>
+                    <div class="text-center">Il numero massimo di partecipanti è già stato raggiunto</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-hide="event.partecipants.length == event.maxPartecipants">
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="alert-group">
+                    <div class="alert alert-danger">
+                        <div class="text-center"><strong>Devi essere autenticato per iscriverti alla sessione</strong></div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-xs-4 col-xs-offset-2">
+                                <button class="btn btn-block btn-success" ng-click="open('views/user/login.html')">Accedi</button>
+                            </div>
+                            <div class="col-xs-4">
+                                <button class="btn btn-block btn-primary" ng-click="open('views/user/create.html')">Iscriviti</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <br/>
+
 </div>
