@@ -1222,6 +1222,7 @@ $router->post("DigiDay/php/router.php/session/create", function() {
     $maxPartecipants = filter_var($json->session->maxPartecipants, FILTER_SANITIZE_STRING);
     $details = filter_var($json->session->details, FILTER_SANITIZE_STRING);
     $items = $json->session->items;
+    echo $_SESSION["fresher"];
     $creator = $_SESSION["fresher"];
     $classroom = filter_var($json->session->classroom->id, FILTER_SANITIZE_STRING);
     $topic = filter_var($json->session->topic->id, FILTER_SANITIZE_STRING);

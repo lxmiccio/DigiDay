@@ -26,6 +26,9 @@ angular.module("DigiDayMdl", ["ngRoute", "mwl.calendar", "nya.bootstrap.select",
                 $routeProvider.when("/sessione/iscriviti", {
                     templateUrl: "views/takePart.html"
                 });
+                $routeProvider.otherwise({
+                    templateUrl: "views/calendar/calendar.html"
+                });
             }])
 
         .controller("HomeCtrl", function ($scope, $uibModal, User, Utility) {

@@ -204,7 +204,48 @@ angular.module("CalendarMdl", [])
 
             var vm = this;
 
+            vm.allEvents = [];
             vm.events = [];
+
+            vm.filter = function (topic) {
+                if (topic === 0) {
+                    vm.events = vm.allEvents;
+                } else {
+                    if (angular.isArray(vm.allEvents)) {
+                        vm.events = [];
+                        vm.allEvents.forEach(function (entry) {
+                            if (entry.topic.id === topic) {
+                                vm.events.push(entry);
+                            }
+                        });
+                    }
+                }
+            };
+
+            vm.topics = [];
+
+            vm.getTopics = function () {
+                var topic = {
+                    id: 0,
+                    scope: "Tutto"
+                };
+                $http.get("/DigiDay/php/router.php/topics")
+                        .success(function (data, status, headers, config) {
+                            if (Array.isArray(data.topics)) {
+                                vm.topics.push(topic);
+                                data.topics.forEach(function (entry) {
+                                    vm.topics.push(entry);
+                                });
+                                vm.filter(topic.id);
+                            }
+                        })
+                        .error(function (data, status, headers, config) {
+                            console.log(data);
+                        });
+                $scope.topic = topic;
+            };
+
+            vm.getTopics();
 
             vm.deleteSession = function (sessionId) {
                 $http.post("/DigiDay/php/router.php/delete/session", {sessionId: sessionId})
@@ -230,7 +271,7 @@ angular.module("CalendarMdl", [])
                         .error(function (data, status, headers, config) {
                             console.log(data);
                         });
-            }
+            };
 
             vm.getSessions = function () {
                 $http.get("/DigiDay/php/router.php/sessions/calendar")
@@ -240,7 +281,7 @@ angular.module("CalendarMdl", [])
                                 data.sessions.forEach(function (entry) {
                                     entry.startsAt = new Date(entry.startsAt);
                                     entry.endsAt = new Date(entry.endsAt);
-                                    vm.events.push(entry);
+                                    vm.allEvents.push(entry);
                                 });
                             }
                             console.log(vm.events)
@@ -279,5 +320,12 @@ angular.module("CalendarMdl", [])
                 $event.preventDefault();
                 $event.stopPropagation();
                 event[field] = !event[field];
+            };
+        })
+
+        .filter("topic", function () {
+            return function (sessions, topic) {
+
+                return sessions;
             };
         });
